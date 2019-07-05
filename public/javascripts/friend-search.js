@@ -5,6 +5,6 @@ const searchForm = document.querySelector('form')
 searchForm.addEventListener('submit', (event) => {
     event.preventDefault()
 
-    fetch(`/api/friend-search?userName=${userInput.value}`).then(response)
+    // fetch(`/api/friend-search?userName=${userInput.value}`).then(response)
 })
 
