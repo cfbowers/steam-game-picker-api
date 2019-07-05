@@ -4,9 +4,14 @@ const config = require('config')
 const mongoURL = `${config.get('mongo.url')}/${config.get('mongo.database')}`
 const connectionOptions = { useNewUrlParser: true }
 
+const connect = () => {
+    return MongoClient.connect(mongoURL, connectionOptions)
+}
+
 const getAll = (collection) => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(mongoURL, connectionOptions).then(client => {
+        connect()
+        .then(client => {
             client.db().collection(collection).find().toArray().then(results => {
                 resolve(results)
             })
@@ -16,7 +21,8 @@ const getAll = (collection) => {
 
 const saveDocument = (collection, document) => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(mongoURL, connectionOptions).then(client => {
+        connect()
+        .then(client => {
             const col = client.db().collection(collection)
 
             col.insertOne(document).then(result => {
@@ -28,9 +34,17 @@ const saveDocument = (collection, document) => {
     })
 }
 
+/* 
+    Go through each user document 
+    Go through each game 
+    If the game does not exist in the game collection, add it 
+    If the game does exist in the game collection, increment the count by 1
+    Then, return games from the games collection that have a count equal to the number of users
+*/ 
+
 const updateRecord = (collection, findRecordQueryObject, updateRecordOperationsObject) => {
     return new Promise ((resolve, reject) => {
-        MongoClient.connect(mongoURL, connectionOptions)
+        connect()
         .then(client => {
             const col = client.db().collection(collection)
             col.findOneAndUpdate(findRecordQueryObject, { $set: updateRecordOperationsObject })
@@ -41,8 +55,21 @@ const updateRecord = (collection, findRecordQueryObject, updateRecordOperationsO
     })
 }
 
+const dropCollection = (collection) => {
+    return new Promise((resolve, reject) => {
+        connect()
+        .then(client => {
+            client.db().collection(collection).drop()
+            .then(results => {
+                resolve(results)
+            })
+        })
+    })
+}
+
 module.exports = {
     saveDocument: saveDocument,
     getAll: getAll,
-    updateRecord: updateRecord
+    updateRecord: updateRecord,
+    dropCollection: dropCollection
 }
