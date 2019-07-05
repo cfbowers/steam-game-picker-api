@@ -1,15 +1,46 @@
 const router = require('express').Router()
 const steamHelper = require('../helpers/steam')
 const mongoHelper = require('../helpers/mongo')
+const conf = require('config')
+
+const userDataCollection = conf.get('mongo.collections.user-data')
 
 router.get('/', (req, res) => {
 
 })
 
-router.get('/get-games', (req, res) => {
-    req.query.steamIDs.split(',').forEach(steamID => {
-        steamHelper.getUserSteamData(steamID).then(document => { 
-            console.log(document)
+router.patch('/users', (req, res) => {
+    steamID = req.body.steamID
+
+    steamHelper.getUserSteamData(steamID).then(userData => {
+        findQuery = { steamID: steamID }
+        updateOperations = { 
+            games: userData.games,
+            nickname: userData.nickname,
+            realName: userData.realName,
+            avatar: userData.avatar
+        }
+        mongoHelper.updateRecord(userDataCollection, findQuery, updateOperations)
+        .then(result =>[
+            res.send(result)
+        ])
+    })
+})
+
+router.get('/users', (req, res) => {
+    mongoHelper.getAll(userDataCollection)
+    .then(results => {
+        res.send(results)
+    })
+})
+
+router.post('/users', (req, res) => {
+    const steamID = req.query.steamID
+    steamHelper.getUserSteamData(steamID)
+    .then(userData => { 
+        mongoHelper.saveDocument(userDataCollection, userData)
+        .then(result => {
+            res.send({ message: `user data was saved successfully for ${steamID}`})
         })
     })
 })
