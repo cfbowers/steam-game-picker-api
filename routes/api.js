@@ -4,8 +4,8 @@ const mongoHelper = require('../helpers/mongo')
 const grunt = require('../helpers/data-grunt')
 const conf = require('config')
 
-const userDataCollection = mongoHelper.collections.userData
-const gamesCollection = mongoHelper.collections.allGames
+const userDataCollection = mongoHelper.collectionsEnum.userData
+const gamesCollection = mongoHelper.collectionsEnum.allGames
 
 router.get('/games', (req, res) => {
     mongoHelper.getDocuments(gamesCollection, {})

@@ -4,7 +4,7 @@ const config = require('config')
 const mongoURL = `${config.get('mongo.url')}/${config.get('mongo.database')}`
 const connectionOptions = config.get('mongo.connection-options')
 
-const collections = {
+const collectionsEnum = {
     allGames: config.get('mongo.collections.all-owned-games'),
     userData: config.get('mongo.collections.user-data')
 }
@@ -23,47 +23,20 @@ const getDocuments = async (collection, searchQueryObject) => {
     return await client.db().collection(collection).find(searchQueryObject).toArray()
 }
 
-const insertDocument = (collection, document) => {
-	return new Promise((resolve, reject) => {
-		connect()
-			.then(client => {
-				const col = client.db().collection(collection)
-
-				col.insertOne(document).then(result => {
-					resolve(result)
-				}).catch(error => {
-					reject(error) 
-				})
-			})
-	})
+const insertDocument = async (collection, document) => {
+    const client = await connect()
+    return await client.db().collection(collection).insertOne(document)
 }
 
-const updateDocument = (collection, findRecordQueryObject, updateRecordOperationsObject) => {
-	return new Promise ((resolve, reject) => {
-		connect()
-			.then(client => {
-				const col = client.db().collection(collection)
-				col.findOneAndUpdate(findRecordQueryObject, updateRecordOperationsObject)
-					.then(result => {
-						resolve(result)
-					})
-			})
-	})
+const updateDocument = async (collection, findRecordQueryObject, updateRecordOperationsObject) => {
+	const client = await connect()
+    return await client.db().collection(collection)
+        .findOneAndUpdate(findRecordQueryObject, updateRecordOperationsObject)
 }
 
-const dropCollection = (collection) => {
-	return new Promise((resolve, reject) => {
-		connect()
-			.then(client => {
-				client.db().collection(collection).drop()
-					.then(results => {
-						resolve(results)
-					})
-					.catch((result) => {
-						reject(result)
-					})
-			})
-	})
+const dropCollection = async (collection) => {
+	const client = await connect()
+	return await client.db().collection(collection).drop()
 }
 
 module.exports = {
@@ -72,5 +45,5 @@ module.exports = {
 	getDocuments: getDocuments,
 	updateDocument: updateDocument,
     dropCollection: dropCollection,
-    collections: collections
+    collectionsEnum: collectionsEnum
 }

@@ -19,9 +19,7 @@ const getUserGames = async (steamID) => {
     const games = await steam.getUserOwnedGames(steamID)
     return { games }
 }
-getUserGames('76561198025386032').then((result) => {
-    console.log(result)
-})
+
 
 module.exports = {
     getUserSteamData: getUserSteamData,
