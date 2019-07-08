@@ -7,8 +7,11 @@
         "url": "mongodb://127.0.0.1:27017",
         "database": "steam-data",
         "collections": {
-            "user-data": "steam-user-data",
-            "all-games": "games"
+            "user-data": "all-user-data",
+            "all-owned-games": "games"
+        },
+        "connection-options" : {
+            "useNewUrlParser": true
         }
     }
 }

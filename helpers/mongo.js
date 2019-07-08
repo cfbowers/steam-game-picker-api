@@ -2,74 +2,75 @@ const { MongoClient } = require('mongodb')
 const config = require('config')
 
 const mongoURL = `${config.get('mongo.url')}/${config.get('mongo.database')}`
-const connectionOptions = { useNewUrlParser: true }
+const connectionOptions = config.get('mongo.connection-options')
 
-const connect = () => {
-    return MongoClient.connect(mongoURL, connectionOptions)
+const collections = {
+    allGames: config.get('mongo.collections.all-owned-games'),
+    userData: config.get('mongo.collections.user-data')
 }
 
-const getAll = (collection) => {
-    return new Promise((resolve, reject) => {
-        connect()
-        .then(client => {
-            client.db().collection(collection).find().toArray().then(results => {
-                resolve(results)
-            })
-        })
-    })
+const connect = async () => {
+	return await MongoClient.connect(mongoURL, connectionOptions)
 }
 
-const saveDocument = (collection, document) => {
-    return new Promise((resolve, reject) => {
-        connect()
-        .then(client => {
-            const col = client.db().collection(collection)
-
-            col.insertOne(document).then(result => {
-                resolve(result)
-            }).catch(error => {
-                reject(error) 
-            })
-        })
-    })
+const getDocument = async (collection, searchQueryObject) => {
+    const client = await connect()
+    return await client.db().collection(collection).findOne(searchQueryObject)
 }
 
-/* 
-    Go through each user document 
-    Go through each game 
-    If the game does not exist in the game collection, add it 
-    If the game does exist in the game collection, increment the count by 1
-    Then, return games from the games collection that have a count equal to the number of users
-*/ 
+const getDocuments = async (collection, searchQueryObject) => {
+    const client = await connect()
+    return await client.db().collection(collection).find(searchQueryObject).toArray()
+}
 
-const updateRecord = (collection, findRecordQueryObject, updateRecordOperationsObject) => {
-    return new Promise ((resolve, reject) => {
-        connect()
-        .then(client => {
-            const col = client.db().collection(collection)
-            col.findOneAndUpdate(findRecordQueryObject, { $set: updateRecordOperationsObject })
-            .then(result => {
-                resolve(result)
-            })
-        })
-    })
+const insertDocument = (collection, document) => {
+	return new Promise((resolve, reject) => {
+		connect()
+			.then(client => {
+				const col = client.db().collection(collection)
+
+				col.insertOne(document).then(result => {
+					resolve(result)
+				}).catch(error => {
+					reject(error) 
+				})
+			})
+	})
+}
+
+const updateDocument = (collection, findRecordQueryObject, updateRecordOperationsObject) => {
+	return new Promise ((resolve, reject) => {
+		connect()
+			.then(client => {
+				const col = client.db().collection(collection)
+				col.findOneAndUpdate(findRecordQueryObject, updateRecordOperationsObject)
+					.then(result => {
+						resolve(result)
+					})
+			})
+	})
 }
 
 const dropCollection = (collection) => {
-    return new Promise((resolve, reject) => {
-        connect()
-        .then(client => {
-            client.db().collection(collection).drop()
-            .then(results => {
-                resolve(results)
-            })
-        })
-    })
+	return new Promise((resolve, reject) => {
+		connect()
+			.then(client => {
+				client.db().collection(collection).drop()
+					.then(results => {
+						resolve(results)
+					})
+					.catch((result) => {
+						reject(result)
+					})
+			})
+	})
 }
 
 module.exports = {
-    saveDocument: saveDocument,
-    getAll: getAll,
-    updateRecord: updateRecord,
-    dropCollection: dropCollection
+    insertDocument: insertDocument,
+    getDocument: getDocument,
+	getDocuments: getDocuments,
+	updateDocument: updateDocument,
+    dropCollection: dropCollection,
+    collections: collections
 }

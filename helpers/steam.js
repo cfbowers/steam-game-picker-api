@@ -1,28 +1,29 @@
-const SteamAPI = require('steamapi');
+const SteamAPI = require('steamapi')
 const config = require('config')
+// Nando: 76561198025386032
+// Me: 76561198019642313
 
-const steam = new SteamAPI(config.get('steam.key'));
+const steam = new SteamAPI(config.get('steam.key'))
 
-const getUserSteamData = (steamID) => {
-
-    return new Promise((resolve, reject) => {
-
-        steam.getUserSummary(steamID).then(userSummary => {
-            steam.getUserOwnedGames(steamID).then(games => {
-                const document = {
-                    steamID, 
-                    nickname: userSummary.nickname,
-                    realName: userSummary.realName,
-                    avatar: userSummary.avatar,
-                    games
-                }
-                resolve(document)
-            })          
-        })
-    })
-
+const getUserSteamData = async (steamID) => {
+    const userSummary = await steam.getUserSummary(steamID)
+    return {
+        steamID, 
+        nickname: userSummary.nickname,
+        realName: userSummary.realName,
+        avatar: userSummary.avatar
+    }
 }
 
+const getUserGames = async (steamID) => {
+    const games = await steam.getUserOwnedGames(steamID)
+    return { games }
+}
+getUserGames('76561198025386032').then((result) => {
+    console.log(result)
+})
+
 module.exports = {
-    getUserSteamData: getUserSteamData
+    getUserSteamData: getUserSteamData,
+    getUserGames: getUserGames
 }
