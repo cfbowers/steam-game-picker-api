@@ -6,18 +6,26 @@ const config = require('config')
 const steam = new SteamAPI(config.get('steam.key'))
 
 const getUserSteamData = async (steamID) => {
-    const userSummary = await steam.getUserSummary(steamID)
-    return {
-        steamID, 
-        nickname: userSummary.nickname,
-        realName: userSummary.realName,
-        avatar: userSummary.avatar
+    try {
+        const userSummary = await steam.getUserSummary(steamID)
+        return {
+            steamID, 
+            nickname: userSummary.nickname,
+            realName: userSummary.realName,
+            avatar: userSummary.avatar
+        }
+    } catch (e) {
+        return undefined
     }
 }
 
 const getUserGames = async (steamID) => {
-    const games = await steam.getUserOwnedGames(steamID)
-    return { games }
+    try {
+        const games = await steam.getUserOwnedGames(steamID)
+        return  games 
+    } catch {
+        return undefined
+    }
 }
 
 
