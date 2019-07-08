@@ -21,26 +21,6 @@ router.post('/users', (req, res) => {
     })
 })
 
-// Updates user records
-router.patch('/users', (req, res) => {
-    steamID = req.body.steamID
-    steamHelper.getUserSteamData(steamID)
-        .then(userData => {
-            updateOperations = { 
-                $set: {
-                    games: userData.games,
-                    nickname: userData.nickname,
-                    realName: userData.realName,
-                    avatar: userData.avatar
-                }
-            }
-            mongoHelper.updateDocument(userDataCollection, { steamID }, updateOperations)
-                .then(result => {
-                    res.send({ message: `Found and updated ${result.value._id} using steamID of ${findQuery.steamID}`})
-                })
-        })
-})
-
 router.get('/games', (req, res) => {
     mongoHelper.getDocuments(gamesCollection, {})
     .then(results => {
@@ -59,45 +39,5 @@ router.get('/games/shared', (req, res) => {
         })
     })
 })
-
-//Updates the games count
-router.patch('/games', (res, req) => {
-	mongoHelper.dropCollection(gamesCollection)
-		.then(results => {
-			console.log({ message: `Dropped collection: ${gamesCollection}` })
-		})
-		.catch(result => {
-			console.log({ error: 'Unable to drop collection, it may not exist' })
-		})
-		.then(() => {
-			mongoHelper.getDocuments(userDataCollection, {})
-				.then((userData) => {
-					userData.forEach(user => {
-						user.games.forEach(game =>{
-
-							let gameDocument = {
-								name: game.name, 
-								appID: game.appID,
-								logoURL: game.logoURL,
-								iconURL: game.iconURL,
-								users: [
-									user.steamID
-								]
-							}
-							mongoHelper.insertDocument(userDataCollection, gameDocument)
-						})
-					})
-				})
-		})
-
-	/* 
-        Go through each user
-        Go through each game 
-        If the game does not exist in the db, then create
-        If the game does exist then updated the count by one 
-    */
-})
-
-
 
 module.exports = router
