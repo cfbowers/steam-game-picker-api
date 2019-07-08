@@ -28,8 +28,42 @@ const getUserGames = async (steamID) => {
     }
 }
 
+const isMultiplayer = (categories) => {
+    let isMulti = false 
+    if (categories) {
+        categories.forEach(category => {
+            if (category.id == 36) isMulti = true
+        })
+    }
+    return isMulti
+}
+
+/*
+    For some reason, some games do not allow you to get the details 
+    This does not appear to be related to login. Look at 
+    https://steamdb.info/app/307780/
+    compared to 
+    https://steamdb.info/app/320/
+*/ 
+const getGameDetails = async (appID) => {
+    try {
+        const gameDetails = await steam.getGameDetails(appID)
+        const isMulti = isMultiplayer(gameDetails.categories)
+        return {
+            platforms: gameDetails.platforms,
+            multiPlayer: isMulti
+        }
+    } catch (e) {
+        return undefined
+    }
+}
+
+steam.getGameDetails(307780).then(details => {
+
+})
 
 module.exports = {
     getUserSteamData: getUserSteamData,
-    getUserGames: getUserGames
+    getUserGames: getUserGames,
+    getGameDetails: getGameDetails
 }

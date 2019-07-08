@@ -14,6 +14,17 @@ const trimUserObject = (userData) => {
     }
 }
 
+const appendDetailsToGameObject = async (gameObject) => {
+    const gameDetails = await steamHelper.getGameDetails(gameObject.appID)
+    if (gameDetails) { 
+        gameObject['platforms'] = gameDetails.platforms
+        gameObject ['multiPlayer'] = gameDetails.multiPlayer
+    }
+    gameObject['owners'] = []
+    gameObject['_id'] = gameObject.appID
+    return gameObject
+}
+
 const getAllUsers = async () => {
     const users = await mongoHelper.getDocuments(userCollection, {})
     const usersArray = []
@@ -68,9 +79,9 @@ const insertNewGame = async (gameObject) => {
     if (exists) {
         log.info(`${gameObject.name} (${gameObject.appID}) alread exists in the db, skipping`)
     } else {
-        gameObject['owners'] = []
+        const newGameObject = await appendDetailsToGameObject(gameObject)
         log.info(`Adding ${gameObject.name} (${gameObject.appID}) to ${gameCollection}`)
-        return await mongoHelper.insertDocument(gameCollection, gameObject)
+        return await mongoHelper.insertDocument(gameCollection, newGameObject)
     }
 }
 
@@ -83,7 +94,7 @@ const importUser = async (steamID) => {
     } else {
         const userData = await steamHelper.getUserSteamData(steamID)
         if (userData) {
-            const userRecord = trimUserObject(userData)
+            const userRecord = await trimUserObject(userData)
             const userSaveResult = await mongoHelper.insertDocument(userCollection, userRecord)
             log.info(`Added user ${userData.nickname} to ${userCollection} with an id of ${userSaveResult.insertedId}`)
             

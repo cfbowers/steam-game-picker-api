@@ -30,11 +30,28 @@ router.get('/games', (req, res) => {
 
 router.get('/games/shared', (req, res) => {
     grunt.getAllUsers().then(users => {
-        mongoHelper.getDocuments(gamesCollection, {
-            owners: {
-                $all: users
-            }
-        }).then(results => {
+        const searchQueryObject = { owners: { $all: users }, multiPlayer: true }
+
+
+        // if (req.query.multiPlayer)
+        //     searchQueryObject['multiPlayer'] = req.query.multiPlayer 
+
+        // if (req.query.platform) {
+        //     switch (req.query.platform) {
+        //         case 'shit':
+        //             searchQueryObject['platforms'] = {linux: true }
+        //             break
+        //         case 'mac':
+        //             searchQueryObject['platforms'] = { mac: true}
+        //             break 
+        //         default:
+        //             searchQueryObject['platforms'] = { windows: true }
+        //     }
+        // }
+        // console.log(searchQueryObject)
+
+        mongoHelper.getDocuments(gamesCollection, searchQueryObject)
+        .then(results => {
             res.send(results)
         })
     })
