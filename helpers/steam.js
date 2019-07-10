@@ -32,7 +32,8 @@ const isMultiplayer = (categories) => {
     let isMulti = false 
     if (categories) {
         categories.forEach(category => {
-            if (category.id == 36) isMulti = true
+            if (category.id == 36) 
+                isMulti = true
         })
     }
     return isMulti
@@ -57,10 +58,6 @@ const getGameDetails = async (appID) => {
         return undefined
     }
 }
-
-steam.getGameDetails(307780).then(details => {
-
-})
 
 module.exports = {
     getUserSteamData: getUserSteamData,
