@@ -1,7 +1,11 @@
 const { MongoClient } = require('mongodb')
 const config = require('config')
 
-const mongoURL = `${config.get('mongo.url')}/${config.get('mongo.database')}`
+const mongoURL = 'mongodb+srv://mongoAdmin:u3UNdduis4hbqMAL@cluster0-gmyx9.mongodb.net/steam-game-picker?retryWrites=true&w=majority'
+// const mongoURL = process.env.MONGOLAB_URI ||
+//     `${config.get('mongo.url')}/${config.get('mongo.database')}`
+
+// mongodb+srv://mongoAdmin:u3UNdduis4hbqMAL@cluster0-gmyx9.mongodb.net/test?retryWrites=true&w=majority
 const connectionOptions = config.get('mongo.connection-options')
 
 const collectionsEnum = {
