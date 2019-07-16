@@ -8,10 +8,11 @@
         "database": "steam-data",
         "collections": {
             "user-data": "all-user-data",
-            "all-owned-games": "games"
+            "all-games": "games"
         },
         "connection-options" : {
-            "useNewUrlParser": true
+            "useNewUrlParser": true,
+            "useCreateIndex": true
         }
     }
 }
