@@ -4,41 +4,27 @@ const mongoose = require('../db/mongoose')
 
 const importGamesBySteamID = async (steamID) => {
     const userGames = await steam.getUserGames(steamID)
-    const appIDs = userGames.map(game => { return game.appID })
-    await mongoose.Game.insertMany(userGames, { ordered: false })
+    userGames.forEach(game => importGame(game, steamID))
 }
 
-// const importGamesBySteamID = async (steamID) => {
-//     try {
-//         const userGames = await steam.getUserGames(steamID)
-//         userGames.forEach(game => { 
-//             mongoose.Game.findOne({ appID: game.appID })
-//             .then(existingGame => {
-//                 if (!existingGame) {
-//                     steam.getGameDetails(game.appID)
-//                     .then(details => {
-//                         new mongoose.Game({ 
-//                             appID: game.appID, 
-//                             name: game.name, 
-//                             logoURL: game.logoURL,
-//                             iconURL: game.iconURL,
-//                             owners: [steamID]
-//                         })
-//                     .save()
-//                     .then(() => {
-//                             console.log(`imported ${game.name}`)
-//                         })
-//                     })
-//                 } else {
-//                     addGameOwner(game.appID, steamID)
-//                 }
-//             })
-//         }) 
-        
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
+const importGame = async (game, steamID) => {
+    const existingGame = await mongoose.Game.findOne({ appID: game.appID })
+    if (existingGame) {
+        addGameOwner(game.appID, steamID)
+    } else {
+        game = cleanGameObject(game)
+        game['owners'] = [steamID]
+
+        const gameDetails = await steam.getGameDetails(game.appID)
+        if (gameDetails) {
+            console.log(gameDetails)
+            game['multiplayer'] = gameDetails.multiplayer,
+            game['platforms'] = gameDetails.platforms
+        }
+        await new mongoose.Game(game).save()
+        console.log(`imported ${game.name}`)
+    }
+}
 
 const addGameOwner = async (appID, steamID) => {
     const game = await mongoose.Game.findOne({ appID })
@@ -49,6 +35,12 @@ const addGameOwner = async (appID, steamID) => {
         await game.save() 
         console.log(`added ${steamID} as an owner of ${game.name}`)
     }
+}
+
+const cleanGameObject = (game) =>{
+    delete game.playTime
+    delete game.playTime2
+    return game
 }
 
 module.exports = {

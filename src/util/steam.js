@@ -52,9 +52,10 @@ const getGameDetails = async (appID) => {
         const isMulti = isMultiplayer(gameDetails.categories)
         return {
             platforms: gameDetails.platforms,
-            multiPlayer: isMulti
+            multiplayer: isMulti
         }
     } catch (e) {
+        console.log(e)
         return undefined
     }
 }

@@ -24,8 +24,6 @@ const Game = new mongoose.model('Game', {
     owners:      { type: Array, required: true, default: [] }
 })
 
-
-
 module.exports = {
     User,
     Game
