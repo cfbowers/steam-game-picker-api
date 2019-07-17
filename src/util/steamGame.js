@@ -9,7 +9,8 @@ const importGamesBySteamID = async (steamID) => {
 
 const getSharedGames = async (steamIDs, multiplayer = false, platforms) => {
     const searchQuery = { owners: { $all: steamIDs }, multiplayer }
-    platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
+    if (platforms)
+        platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
     await updateSharedGames(steamIDs)
     return await mongoose.Game.find(searchQuery)
 }
