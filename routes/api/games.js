@@ -11,8 +11,9 @@ router.get('/', async (req, res) => {
 router.get('/shared', async (req, res) => {
     const steamIDs = await sUser.getAllSteamIDs()
     const multiplayer = (req.query.multiplayer == 'true')
+    const chooseOne = (req.query.chooseOne == 'true')
     const platforms = (req.query.platforms) ? req.query.platforms.split(',') : undefined
-    const sharedGames = await sGame.getSharedGames(steamIDs, multiplayer, platforms)
+    const sharedGames = await sGame.getSharedGames(steamIDs, multiplayer, platforms, chooseOne)
     res.send(sharedGames)
 })
 

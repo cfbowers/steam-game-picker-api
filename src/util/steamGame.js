@@ -7,11 +7,17 @@ const importGamesBySteamID = async (steamID) => {
     userGames.forEach(game => importGame(game, steamID))
 }
 
-const getSharedGames = async (steamIDs, multiplayer = false, platforms) => {
+const getSharedGames = async (steamIDs, multiplayer = false, platforms, chooseOne = falses) => {
     const searchQuery = { owners: { $all: steamIDs }, multiplayer }
     if (platforms)
         platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
-    return await mongoose.Game.find(searchQuery)
+    const results = await mongoose.Game.find(searchQuery)
+    if (chooseOne) {
+        let randomIndex = Math.floor(Math.random() * results.length)
+        return results[randomIndex]
+    } else {
+        return results
+    }
 }
 
 const updateSharedGames = async (steamIDs) => {
