@@ -5,7 +5,7 @@
     },
 
     "mongo" : {
-        "url": "mongodb://127.0.0.1:27017/steam-data",
+        "url": "mongodb+srv://mongoAdmin:gj4M5QE9HjjemuCQ@cluster0-gmyx9.mongodb.net/steam-game-picker?retryWrites=true&w=majority",
         "collections": {
             "user-data": "all-user-data",
             "all-games": "games"

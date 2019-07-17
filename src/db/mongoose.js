@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const config = require('config')
 
-const mongoUrl = `${config.get('mongo.url')}/${config.get('mongo.database')}`
+const mongoUrl = config.get('mongo.url')
 const mongoConnectionOptions = config.get('mongo.connection-options')
 
 
