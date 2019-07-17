@@ -1,6 +1,11 @@
 const mongoose = require('../../src/db/mongoose')
 const steam = require('./steam')
 
+const getAllSteamIDs = async () => { 
+    const allUsers = await mongoose.User.find({})
+    return allUsers.map(user => { return user.steamID } )
+}
+
 const importUser = async (steamID) => {
     try {
         const userData = await steam.getUserSteamData(steamID)
@@ -14,5 +19,6 @@ const importUser = async (steamID) => {
 }
 
 module.exports = { 
-    importUser: importUser
+    importUser: importUser,
+    getAllSteamIDs: getAllSteamIDs
 }

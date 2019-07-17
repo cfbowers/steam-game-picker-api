@@ -1,6 +1,7 @@
 {
     "steam": {
-        "key": "D33F1E31EBC53CA8B78168933A324732"
+        "key": "D33F1E31EBC53CA8B78168933A324732",
+        "apiCallTimeout": 1000
     },
 
     "mongo" : {

@@ -7,20 +7,36 @@ const importGamesBySteamID = async (steamID) => {
     userGames.forEach(game => importGame(game, steamID))
 }
 
+const getSharedGames = async (steamIDs, multiplayer = false, platforms) => {
+    const searchQuery = { owners: { $all: steamIDs }, multiplayer }
+    platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
+    await updateSharedGames(steamIDs)
+    return await mongoose.Game.find(searchQuery)
+}
+
+const updateSharedGames = async (steamIDs) => {
+    const sharedGames = await mongoose.Game.find({owners: { $all: steamIDs }})
+    sharedGames.forEach(game => appendGameDetails(game))
+}
+
+const appendGameDetails = async (game) => {
+    const details = await steam.getGameDetails(game.appID)
+    if (details) {
+        game['multiplayer'] = details.multiplayer,
+        game['platforms'] = details.platforms
+        await game.save()
+        console.log(`updated ${game.name} with additional details`)
+    }
+}
+
 const importGame = async (game, steamID) => {
     const existingGame = await mongoose.Game.findOne({ appID: game.appID })
     if (existingGame) {
         addGameOwner(game.appID, steamID)
     } else {
-        game = cleanGameObject(game)
+        delete game.playTime
+        delete game.playTime2
         game['owners'] = [steamID]
-
-        const gameDetails = await steam.getGameDetails(game.appID)
-        if (gameDetails) {
-            console.log(gameDetails)
-            game['multiplayer'] = gameDetails.multiplayer,
-            game['platforms'] = gameDetails.platforms
-        }
         await new mongoose.Game(game).save()
         console.log(`imported ${game.name}`)
     }
@@ -37,12 +53,7 @@ const addGameOwner = async (appID, steamID) => {
     }
 }
 
-const cleanGameObject = (game) =>{
-    delete game.playTime
-    delete game.playTime2
-    return game
-}
-
 module.exports = {
-    importGamesBySteamID: importGamesBySteamID
+    importGamesBySteamID: importGamesBySteamID,
+    getSharedGames: getSharedGames
 }

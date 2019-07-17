@@ -49,14 +49,10 @@ const isMultiplayer = (categories) => {
 const getGameDetails = async (appID) => {
     try {
         const gameDetails = await steam.getGameDetails(appID)
-        const isMulti = isMultiplayer(gameDetails.categories)
-        return {
-            platforms: gameDetails.platforms,
-            multiplayer: isMulti
-        }
+        const multiplayer = isMultiplayer(gameDetails.categories)
+        return { platforms: gameDetails.platforms, multiplayer }
     } catch (e) {
-        console.log(e)
-        return undefined
+        return e
     }
 }
 
