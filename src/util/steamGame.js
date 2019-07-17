@@ -11,7 +11,6 @@ const getSharedGames = async (steamIDs, multiplayer = false, platforms) => {
     const searchQuery = { owners: { $all: steamIDs }, multiplayer }
     if (platforms)
         platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
-    await updateSharedGames(steamIDs)
     return await mongoose.Game.find(searchQuery)
 }
 
@@ -56,5 +55,6 @@ const addGameOwner = async (appID, steamID) => {
 
 module.exports = {
     importGamesBySteamID: importGamesBySteamID,
-    getSharedGames: getSharedGames
+    getSharedGames: getSharedGames,
+    updateSharedGames: updateSharedGames
 }

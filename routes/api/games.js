@@ -18,6 +18,8 @@ router.get('/shared', async (req, res) => {
 
 router.post('/', async (req, res) => {
     res.send(await sGame.importGamesBySteamID(req.body.steamID.trim()))
+    const steamIDs = await sUser.getAllSteamIDs()
+    await sGame.updateSharedGames(steamIDs)
 })
 
 module.exports = router
