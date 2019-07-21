@@ -7,7 +7,7 @@ const importGamesBySteamID = async (steamID) => {
     userGames.forEach(game => importGame(game, steamID))
 }
 
-const getSharedGames = async (steamIDs, multiplayer = false, platforms, chooseOne = falses) => {
+const getSharedGames = async (steamIDs, multiplayer = false, platforms, chooseOne = false) => {
     const searchQuery = { owners: { $all: steamIDs }, multiplayer }
     if (platforms)
         platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./src/www",
-    "dev": "nodemon ./src/www"
+    "dev": "nodemon ./src/www -e=*"
   },
   "dependencies": {
     "config": "^3.1.0",

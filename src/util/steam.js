@@ -19,6 +19,17 @@ const getUserSteamData = async (steamID) => {
     }
 }
 
+const getUserFriends = async (steamID) => {
+    const friends = await steam.getUserFriends(steamID)
+    const detailedFriends = [] 
+    for (i = 0; i < friends.length; i++) {
+        const detailedFriend = await getUserSteamData(friends[i].steamID)
+        detailedFriends.push(detailedFriend)
+    }
+    return detailedFriends
+}
+
+
 const getUserGames = async (steamID) => {
     try {
         const games = await steam.getUserOwnedGames(steamID)
@@ -59,5 +70,6 @@ const getGameDetails = async (appID) => {
 module.exports = {
     getUserSteamData: getUserSteamData,
     getUserGames: getUserGames,
-    getGameDetails: getGameDetails
+    getGameDetails: getGameDetails,
+    getUserFriends: getUserFriends
 }

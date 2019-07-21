@@ -7,6 +7,10 @@ router.get('/', async (req, res) => {
     res.send(await  mongoose.User.find({})) 
 })
 
+router.get('/:id/friends', async (req, res) => {
+    res.send(await sUser.getUserFriends(req.params.id))
+})
+
 router.post('/', async (req, res) => {
     res.send(await sUser.importUser(req.body.steamID.trim())) 
 })

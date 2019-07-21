@@ -6,6 +6,10 @@ const getAllSteamIDs = async () => {
     return allUsers.map(user => { return user.steamID } )
 }
 
+const getUserFriends = async (steamID) => {
+    return await steam.getUserFriends(steamID)
+}
+
 const importUser = async (steamID) => {
     try {
         const userData = await steam.getUserSteamData(steamID)
@@ -20,5 +24,6 @@ const importUser = async (steamID) => {
 
 module.exports = { 
     importUser: importUser,
-    getAllSteamIDs: getAllSteamIDs
+    getAllSteamIDs: getAllSteamIDs,
+    getUserFriends: getUserFriends
 }
