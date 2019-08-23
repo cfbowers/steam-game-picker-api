@@ -67,9 +67,14 @@ const getGameDetails = async (appID) => {
     }
 }
 
+const test = async (arg) => {
+    return await steam.resolve(arg)
+}
+
 module.exports = {
     getUserSteamData: getUserSteamData,
     getUserGames: getUserGames,
     getGameDetails: getGameDetails,
-    getUserFriends: getUserFriends
+    getUserFriends: getUserFriends,
+    test: test
 }
