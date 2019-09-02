@@ -33,8 +33,9 @@ const getUserFriends = async (steamID) => {
 const getUserGames = async (steamID) => {
     try {
         const games = await steam.getUserOwnedGames(steamID)
-        return  games 
-    } catch {
+        return games 
+    } catch (e) {
+        console.log(e)
         return undefined
     }
 }

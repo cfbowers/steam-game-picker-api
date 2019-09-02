@@ -1,14 +1,22 @@
 const steam = require('./steam')
 const mongoose = require('../db/mongoose')
+const sUser = require('../util/steamUser')
 
 
 const importGamesBySteamID = async (steamID) => {
     const userGames = await steam.getUserGames(steamID)
-    userGames.forEach(game => importGame(game, steamID))
+    // Privacy settings can cause no games to be returned
+    // https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0001.29
+    if (userGames === undefined) {
+        console.log(`Unable to add game data for user ${steamID}, account is probably private`)
+    } else {
+        userGames.forEach(game => importGame(game, steamID))                   
+    }
 }
 
 const getSharedGames = async (steamIDs, multiplayer = false, platforms, chooseOne = false) => {
-    const searchQuery = { owners: { $all: steamIDs }, multiplayer }
+    // const searchQuery = { owners: { $all: steamIDs }, multiplayer }
+    const searchQuery = { owners: { $all: steamIDs } }
     if (platforms)
         platforms.forEach(platform => { searchQuery[`platforms.${platform}`] = true })
     const results = await mongoose.Game.find(searchQuery)
@@ -20,15 +28,16 @@ const getSharedGames = async (steamIDs, multiplayer = false, platforms, chooseOn
     }
 }
 
-const updateSharedGames = async (steamIDs) => {
-    const sharedGames = await mongoose.Game.find({owners: { $all: steamIDs }})
+const updateSharedGames = async () => {
+    const steamIDs = await sUser.getAllSteamIDs()
+    const sharedGames = await mongoose.Game.find({ owners: { $all: steamIDs } })
     sharedGames.forEach(game => appendGameDetails(game))
 }
 
 const appendGameDetails = async (game) => {
     const details = await steam.getGameDetails(game.appID)
     if (details) {
-        game['multiplayer'] = details.multiplayer,
+        game['multiplayer'] = details.multiplayer || false,
         game['platforms'] = details.platforms
         await game.save()
         console.log(`updated ${game.name} with additional details`)

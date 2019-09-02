@@ -19,18 +19,14 @@ const deleteUser = async (steamID) => {
     }
 }
 
-const importUser = async (steamIDs) => {
-    for (i = 0; i < steamIDs.length; i++)
-    {
-        try {
-            const currentSteamID = steamIDs[i]
-            const userData = await steam.getUserSteamData(currentSteamID)
-            await new mongoose.User(userData).save()
-            console.log(`Saved ${currentSteamID} to the database`)
-        } catch (e) {
-            //Clean this messaging up
-            console.log(e.message)
-        }
+const importUser = async (steamID) => {
+    try {
+        const userData = await steam.getUserSteamData(steamID)
+        await new mongoose.User(userData).save()
+        console.log(`Saved user data for ${steamID} to the database`)
+    } catch (e) {
+        //Clean this messaging up
+        console.log(e.message)
     }
 }
 
