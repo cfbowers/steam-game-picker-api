@@ -33,7 +33,12 @@ const getUserFriends = async (steamID) => {
 const getUserGames = async (steamID) => {
     try {
         const games = await steam.getUserOwnedGames(steamID)
-        return games 
+        return games.map(game => {
+            const newGame = {...game}
+            delete newGame.playTime
+            delete newGame.playTime2
+            return newGame
+        })
     } catch (e) {
         console.log(e)
         return undefined
