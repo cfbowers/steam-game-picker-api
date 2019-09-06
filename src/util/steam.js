@@ -56,6 +56,23 @@ const isMultiplayer = (categories) => {
     return isMulti
 }
 
+const appendGameDetails = async (games) => {
+    const newGames = []
+    for (i = 0; i < games.length; i++) {
+        const currentGame = games[i]
+        try {
+            const gameDetails = await steam.getGameDetails(currentGame.appID)
+            currentGame['platforms'] = gameDetails.platforms 
+            currentGame['multiplayer'] = isMultiplayer(gameDetails.categories)
+            newGames.push(currentGame)
+        } catch (e) {
+            console.log(`unable to get details for ${currentGame.appID}`)
+            newGames.push(currentGame)
+        }
+    }
+    return newGames
+}
+
 /*
     For some reason, some games do not allow you to get the details 
     This does not appear to be related to login. Look at 
@@ -63,15 +80,15 @@ const isMultiplayer = (categories) => {
     compared to 
     https://steamdb.info/app/320/
 */ 
-const getGameDetails = async (appID) => {
-    try {
-        const gameDetails = await steam.getGameDetails(appID)
-        const multiplayer = isMultiplayer(gameDetails.categories)
-        return { platforms: gameDetails.platforms, multiplayer }
-    } catch (e) {
-        return e
-    }
-}
+// const getGameDetails = async (appID) => {
+//     try {
+//         const gameDetails = await steam.getGameDetails(appID)
+//         const multiplayer = isMultiplayer(gameDetails.categories)
+//         return { platforms: gameDetails.platforms, multiplayer }
+//     } catch (e) {
+//         return e
+//     }
+// }
 
 const test = async (arg) => {
     return await steam.resolve(arg)
@@ -80,7 +97,7 @@ const test = async (arg) => {
 module.exports = {
     getUserSteamData: getUserSteamData,
     getUserGames: getUserGames,
-    getGameDetails: getGameDetails,
     getUserFriends: getUserFriends,
+    appendGameDetails: appendGameDetails,
     test: test
 }

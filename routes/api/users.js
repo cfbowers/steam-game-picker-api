@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const mongoose = require('../../src/db/mongoose')
+// const mongoose = require('../../src/db/mongoose')
 const sUser = require('../../src/util/steamUser')
 const sGame = require('../../src/util/steamGame')
 

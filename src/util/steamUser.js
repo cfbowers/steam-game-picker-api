@@ -1,4 +1,4 @@
-const mongoose = require('../../src/db/mongoose')
+// const mongoose = require('../../src/db/mongoose')
 const steam = require('./steam')
 
 const getAllSteamIDs = async () => { 
