@@ -1,5 +1,4 @@
 const NodeCache = require('node-cache')
-const config = require('config')
 
 class Cache {
 

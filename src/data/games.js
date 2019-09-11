@@ -1,4 +1,3 @@
-const fs = require ('fs')
 const steam = require('../util/steam')
 const Cache = require('../data/cache')
 const users = require('../data/users')
@@ -45,26 +44,12 @@ const getSharedGames = async (steamIDs) => {
     }
 }
 
-module.exports = {
-    getSharedGames: getSharedGames,
-    getGame: getGame 
+const filterGames = (games, filters) => {
+    
 }
 
-// getSharedGames(
-//     [
-//         '76561198019642313', 
-//         '76561197960858972', 
-//         '76561198025386032', 
-//         '76561198051207654', 
-//         '76561198053511730',
-//         '76561198043693649'
-//     ]
-// )
-
-// http://localhost:3001/api/games/shared?steamIDs=76561198019642313,76561197960858972,76561198025386032,76561198051207654,76561198053511730,76561198043693649
-// http://localhost:3001/api/games/shared?steamIDs=76561198019642313,76561197960858972,76561198025386032,76561198053511730,76561198043693649
-// BAD http://localhost:3001/api/games/shared?steamIDs=76561198019642313,76561197960858972,76561198025386032,76561198053511730
-
-// Current progress: Functions are linked up to the games api endpoint. I need to figure out how to make the request faster.
-// It looks like you could possibly make the request for multiple appIDs at once: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI#Parameters_3
-// Also, sometimes the app details don't get returned (SteamAPI.js:160), and when that happens a reject promise fucks everything up
+module.exports = {
+    getSharedGames: getSharedGames,
+    getGame: getGame,
+    filterGames: filterGames 
+}

@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const games = require('../../src/data/games')
-const steam = require('../../src/util/steam')
 
 router.post('/preload', (req, res) => {
     const appIDs = req.body.appIDs.split(',')
@@ -9,20 +8,20 @@ router.post('/preload', (req, res) => {
     })
 })
 
+router.get('/shared-appIDs', async (req, res) => {
+    const steamIDs = req.query.steamIDs.split(',')
+    const sharedAppIDs = await games.getSharedGames(steamIDs)
+    res.send(sharedAppIDs)
+})
+
 router.get('/shared', async (req, res) => {
-    // const steamIDs = req.query.steamIDs.split(',')
-    // const multiplayer = (req.query.multiplayer == 'true')
-    // const chooseOne = (req.query.chooseOne == 'true')
-    // const platforms = (req.query.platforms) ? req.query.platforms.split(',') : undefined
-    const sharedGames = await games.getSharedGames([
-                '76561198019642313', 
-                '76561197960858972', 
-                '76561198025386032', 
-                '76561198051207654', 
-                '76561198053511730',
-                '76561198043693649'
-            ])
-    res.send(sharedGames)
+    const steamIDs = req.query.steamIDs.split(',')
+    const multiplayer = (req.query.multiplayer == 'true')
+    const chooseOne = (req.query.chooseOne == 'true')
+    const platforms = (req.query.platforms) ? req.query.platforms.split(',') : undefined
+    const sharedGames = await games.getSharedGames(steamIDs)
+    const filteredGames = games.filterGames(sharedGames, { multiplayer, chooseOne, platforms })
+    res.send(filteredGames)
 })
 
 router.get('/:appID', async (req, res) => {
