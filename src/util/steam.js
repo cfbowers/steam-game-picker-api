@@ -5,99 +5,61 @@ const config = require('config')
 
 const steam = new SteamAPI(config.get('steam.key'))
 
+const getUserSteamDataAll = async (steamID) => {
+    const user = await getUserSteamData(steamID)
+    const friends = await getUserFriends(steamID)
+    const games = await getUserGames(steamID)
+    
+    if (user.error){
+        return user
+    } else {
+        user['visibilityDescription'] = (user.visibilityState == 3) ? 'public' : 'non-public'
+        user['friends'] = (friends.error) ? undefined : friends 
+        user['games'] = (games.error) ? undefined : games 
+        return user
+    } 
+}
+
 const getUserSteamData = async (steamID) => {
     try {
-        const userSummary = await steam.getUserSummary(steamID)
-        return {
-            steamID, 
-            nickname: userSummary.nickname,
-            realName: userSummary.realName,
-            avatar: userSummary.avatar
-        }
-    } catch (e) {
-        return undefined
+        return await steam.getUserSummary(steamID)
+    } catch {
+        return { error: `unable to get user data for ${steamID}` }  
     }
 }
 
 const getUserFriends = async (steamID) => {
-    const friends = await steam.getUserFriends(steamID)
-    const detailedFriends = [] 
-    for (i = 0; i < friends.length; i++) {
-        const detailedFriend = await getUserSteamData(friends[i].steamID)
-        detailedFriends.push(detailedFriend)
+    try {
+        const friends = await steam.getUserFriends(steamID)
+        const steamIDs = friends.map(friend => friend.steamID)
+        return steamIDs
+    } catch {
+        return { error: `unable to get friends for ${steamID}, account may be private` }
     }
-    return detailedFriends
 }
-
 
 const getUserGames = async (steamID) => {
     try {
         const games = await steam.getUserOwnedGames(steamID)
-        return games.map(game => {
-            const newGame = {...game}
-            delete newGame.playTime
-            delete newGame.playTime2
-            return newGame
-        })
-    } catch (e) {
-        console.log(e)
+        return games.map(game => game.appID)
+    } catch {
+        return { error: `unable to get games for ${steamID}, account may be private` }
+    }
+}
+
+const getGameDetails = async (appID) => {
+    try {
+        return await steam.getGameDetails(appID)
+    } catch {
+        console.log(`unable to get game details for ${appID}`)
         return undefined
     }
 }
 
-const isMultiplayer = (categories) => {
-    let isMulti = false 
-    if (categories) {
-        categories.forEach(category => {
-            if (category.id == 36) 
-                isMulti = true
-        })
-    }
-    return isMulti
-}
-
-const appendGameDetails = async (games) => {
-    const newGames = []
-    for (i = 0; i < games.length; i++) {
-        const currentGame = games[i]
-        try {
-            const gameDetails = await steam.getGameDetails(currentGame.appID)
-            currentGame['platforms'] = gameDetails.platforms 
-            currentGame['multiplayer'] = isMultiplayer(gameDetails.categories)
-            newGames.push(currentGame)
-        } catch (e) {
-            console.log(`unable to get details for ${currentGame.appID}`)
-            newGames.push(currentGame)
-        }
-    }
-    return newGames
-}
-
-/*
-    For some reason, some games do not allow you to get the details 
-    This does not appear to be related to login. Look at 
-    https://steamdb.info/app/307780/
-    compared to 
-    https://steamdb.info/app/320/
-*/ 
-// const getGameDetails = async (appID) => {
-//     try {
-//         const gameDetails = await steam.getGameDetails(appID)
-//         const multiplayer = isMultiplayer(gameDetails.categories)
-//         return { platforms: gameDetails.platforms, multiplayer }
-//     } catch (e) {
-//         return e
-//     }
-// }
-
-const test = async (arg) => {
-    return await steam.resolve(arg)
-}
-
 module.exports = {
     getUserSteamData: getUserSteamData,
+    getUserSteamDataAll: getUserSteamDataAll,
     getUserGames: getUserGames,
     getUserFriends: getUserFriends,
-    appendGameDetails: appendGameDetails,
-    test: test
+    getGameDetails: getGameDetails,
 }

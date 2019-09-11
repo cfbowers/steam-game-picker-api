@@ -1,6 +1,24 @@
 const fs = require ('fs')
 const steam = require('../util/steam')
+const Cache = require('../data/cache')
+const users = require('../data/users')
 
+const gamesCache = new Cache('games')
+
+const getGame = async (appID) => {
+    const cachedGame = gamesCache.get(appID)
+    if (cachedGame) {
+        console.log('game already in cache')
+        gamesCache.refreshTTL(appID)
+        return cachedGame
+        
+    } else {
+        const steamGameData = await steam.getGameDetails(appID)
+        gamesCache.save(appID, steamGameData)
+        console.log('saved game data from steam to cache')
+        return steamGameData
+    }
+}
 
 const getCommonGames = (a, b) => {
     const smallerSet = (a.length > b.length) ? b : a 
@@ -11,16 +29,16 @@ const getCommonGames = (a, b) => {
 
 const getSharedGames = async (steamIDs) => {
     if (steamIDs.length >= 2) {
-        const firstUserGames = await steam.getUserGames(steamIDs[0])
-        const secondUserGames = await steam.getUserGames(steamIDs[1])
-        let sharedGames = getCommonGames(firstUserGames, secondUserGames)
+        const firstUser = await users.getUser(steamIDs[0])
+        const secondUser = await users.getUser(steamIDs[1])
+        let sharedGames = getCommonGames(firstUser.games, secondUser.games)
 
         for(i = 0; i < steamIDs.slice(2).length ; i++) {
-            const currentUserGames = await steam.getUserGames(steamIDs[i])
-            sharedGames = getCommonGames(sharedGames, currentUserGames)
+            const currentUser = await users.getUser(steamIDs[i])
+            sharedGames = getCommonGames(sharedGames, currentUser.games)
         }
 
-        return await steam.appendGameDetails(sharedGames)
+        return Promise.all(sharedGames.map(appID => getGame(appID)))
 
     } else {
         console.log('You must input more than one steamID')
@@ -28,7 +46,8 @@ const getSharedGames = async (steamIDs) => {
 }
 
 module.exports = {
-    getSharedGames: getSharedGames
+    getSharedGames: getSharedGames,
+    getGame: getGame 
 }
 
 // getSharedGames(

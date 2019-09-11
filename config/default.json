@@ -1,18 +1,8 @@
 {
     "steam": {
-        "key": "D33F1E31EBC53CA8B78168933A324732",
-        "apiCallTimeout": 1000
+        "key": "D33F1E31EBC53CA8B78168933A324732"
     },
-
-    "mongo" : {
-        "url": "mongodb://127.0.0.1:27017/steam-data",
-        "collections": {
-            "user-data": "all-user-data",
-            "all-games": "games"
-        },
-        "connection-options" : {
-            "useNewUrlParser": true,
-            "useCreateIndex": true
-        }
+    "cache" : {
+        "stdTTL": 1800
     }
 }

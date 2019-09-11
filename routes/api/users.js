@@ -1,32 +1,27 @@
 const router = require('express').Router()
-// const mongoose = require('../../src/db/mongoose')
-const sUser = require('../../src/util/steamUser')
-const sGame = require('../../src/util/steamGame')
+const users = require('../../src/data/users')
 
-router.get('/', async (req, res) => {
-    res.send(await  mongoose.User.find({})) 
+router.get('/:steamID', async (req, res) => {
+    res.send(await users.getUser(req.params.steamID)['games'])
 })
 
-router.get('/:id/friends', async (req, res) => {
-    res.send(await sUser.getUserFriends(req.params.id))
+router.post('/preload', (req, res) => {
+    const steamIDs = req.body.steamIDs.split(',')
+    steamIDs.forEach(steamID => {
+        users.getUser(steamID)
+    })
 })
 
-router.delete('/', async (req, res) => {
-    res.send(await sUser.deleteUser(req.body.steamID))
-})
+// router.get('/:steamID/all-data', async (req, res) => {
+//     res.send(await steam.getUserSteamDataAll(req.params.steamID))
+// })
 
-router.post('/', async (req, res) => {
-    if (req.body.steamIDs) {
-        steamIDs = req.body.steamIDs.split(',')
-        for (i = 0; i < steamIDs.length; i++) {
-            await sUser.importUser(steamIDs[i])
-            await sGame.importGamesBySteamID(steamIDs[i])
-        }
-        await sGame.updateSharedGames()
-        res.send('done')
-    } else {
-        res.send({ error: 'specify a steamID'})
-    }
-})
+// router.get('/:steamID/games', async (req, res) => {
+//     res.send(await steam.getUserGames(req.params.steamID))
+// })
+
+// router.get('/:steamID/friends', async (req, res) => {
+//     res.send(await steam.getUserFriends(req.params.steamID))
+// })
 
 module.exports = router
