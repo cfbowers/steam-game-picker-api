@@ -13,14 +13,22 @@ router.get('/:steamID', async (req, res) => {
     res.send(user)
 })
 
-router.get('/:steamID/games', async (req, res) => {
+router.get('/:steamID/appIDs', async (req, res) => {
     const user = await users.getUser(req.params.steamID)
-    res.send(user.games)
+    res.send(user.appIDs)
+})
+
+router.get('/:steamID/friendIDs', async (req, res) => {
+    const user = await users.getUser(req.params.steamID)
+    res.send(user.friends)
 })
 
 router.get('/:steamID/friends', async (req, res) => {
     const user = await users.getUser(req.params.steamID)
-    res.send(user.friends)
+    const detailedFriends = await Promise.all(
+        user.friends.map(friend => users.getUser(friend))
+    )
+    res.send(detailedFriends)
 })
 
 module.exports = router

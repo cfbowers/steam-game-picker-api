@@ -15,7 +15,7 @@ const getUserSteamDataAll = async (steamID) => {
     } else {
         user['visibilityDescription'] = (user.visibilityState == 3) ? 'public' : 'non-public'
         user['friends'] = (friends.error) ? undefined : friends 
-        user['games'] = (games.error) ? undefined : games 
+        user['appIDs'] = (games.error) ? undefined : games 
         return user
     } 
 }
