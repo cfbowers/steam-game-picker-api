@@ -7,14 +7,14 @@ const gamesCache = new Cache('games', 1800)
 const getGame = async (appID) => {
     const cachedGame = gamesCache.get(appID)
     if (cachedGame) {
-        console.log('game already in cache')
+        console.log(`${appID} found in games cache`)
         gamesCache.refreshTTL(appID)
         return cachedGame
         
     } else {
         const steamGameData = await steam.getGameDetails(appID)
         gamesCache.save(appID, steamGameData)
-        console.log('saved game data from steam to cache')
+        console.log(`retrieved game details for ${appID}, saved in games cache`)
         return steamGameData
     }
 }
@@ -45,7 +45,7 @@ const getSharedGames = async (steamIDs) => {
 }
 
 const filterGames = (games, filters) => {
-    
+
 }
 
 module.exports = {
