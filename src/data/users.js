@@ -2,7 +2,7 @@ const fs = require ('fs')
 const steam = require('../util/steam')
 const Cache = require('../data/cache')
 
-const userCache = new Cache('users')
+const userCache = new Cache('users', 1200)
 
 const getUser = async (steamID) => { 
     const cachedUser = userCache.get(steamID)

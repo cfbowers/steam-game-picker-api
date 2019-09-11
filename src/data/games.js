@@ -3,7 +3,7 @@ const steam = require('../util/steam')
 const Cache = require('../data/cache')
 const users = require('../data/users')
 
-const gamesCache = new Cache('games')
+const gamesCache = new Cache('games', 1800)
 
 const getGame = async (appID) => {
     const cachedGame = gamesCache.get(appID)

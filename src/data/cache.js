@@ -3,9 +3,8 @@ const config = require('config')
 
 class Cache {
 
-    constructor(description) {
-        this.stdTTL = config.get('cache.stdTTL')
-        this.cache = new NodeCache( { stdTTL: this.stdTTL } )
+    constructor(description, stdTTL = 600) {
+        this.cache = new NodeCache( { stdTTL } )
         this.description = description
 
         this.cache.on('expired', (key, value) => {

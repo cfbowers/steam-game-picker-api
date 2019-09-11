@@ -3,6 +3,7 @@
         "key": "D33F1E31EBC53CA8B78168933A324732"
     },
     "cache" : {
-        "stdTTL": 1800
+        "gameTTL": 900,
+        "userTTL": 600
     }
 }
