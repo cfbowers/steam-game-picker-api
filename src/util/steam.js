@@ -1,5 +1,6 @@
 const SteamAPI = require('steamapi')
 const config = require('config')
+const request = require('request')
 // Nando: 76561198025386032
 // Me: 76561198019642313
 
@@ -49,9 +50,10 @@ const getUserGames = async (steamID) => {
 
 const getGameDetails = async (appID) => {
     try {
+        // return request.get(`https://store.steampowered.com/api/appdetails?appids=${appID}`)
         return await steam.getGameDetails(appID)
-    } catch {
-        console.log(`unable to get game details for ${appID}`)
+    } catch (e) {
+        console.log(`unable to get game details for ${appID}: ${e}`)
         return undefined
     }
 }

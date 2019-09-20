@@ -4,8 +4,9 @@ const steam = require('../../src/util/steam')
 
 
 router.get('/steam/:id', async (req, res) => {
-    const arg = req.params.id
-    const returnValue = await steam.test(arg)   
+    const arg = req.params.id.split(',')
+    console.log(arg)
+    const returnValue = await steam.getUserSteamData(arg)   
     res.send(returnValue)
 })
 

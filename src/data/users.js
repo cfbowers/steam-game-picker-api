@@ -18,7 +18,6 @@ const getUser = async (steamID) => {
     }
 }
 
-
 module.exports = {
     getUser: getUser
 }
