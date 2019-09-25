@@ -39,12 +39,12 @@ const getUserFriends = async (steamID) => {
     }
 }
 
-const getUserGames = async (steamID) => {
+const getUserGames  = async (steamID) => {
     try {
         const games = await steam.getUserOwnedGames(steamID)
         return games.map(game => game.appID)
-    } catch {
-        return { error: `unable to get games for ${steamID}, account may be private` }
+    } catch (e) {
+        return { error: `unable to get games for ${steamID}, account may be private: ${e}` }
     }
 }
 

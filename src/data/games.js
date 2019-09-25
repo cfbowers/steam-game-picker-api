@@ -1,6 +1,7 @@
 const steam = require('../util/steam')
 const Cache = require('../data/cache')
 const users = require('../data/users')
+const log = require('../util/winston')
 
 const gamesCache = new Cache('games', 1800)
 
@@ -21,25 +22,29 @@ const getGame = async (appID) => {
 const getCommonGames = (a, b) => {
     const smallerSet = (a.length > b.length) ? b : a 
     const largerSet = (a.length > b.length) ? a : b
-    const appIDs = largerSet.map(game => game.appID)
-    return smallerSet.filter(game => appIDs.includes(game.appID)) 
+    const commonGames = smallerSet.filter(appID => {
+        console.log(appID, largerSet.includes(appID))
+        return largerSet.includes(appID)
+    }) 
+    return commonGames
 }
 
 const getSharedGames = async (steamIDs) => {
     if (steamIDs.length >= 2) {
         const firstUser = await users.getUser(steamIDs[0])
         const secondUser = await users.getUser(steamIDs[1])
+        const remainingUsers = steamIDs.slice(2)
         let sharedAppIDs = getCommonGames(firstUser.appIDs, secondUser.appIDs)
 
-        for(i = 0; i < steamIDs.slice(2).length ; i++) {
-            const currentUser = await users.getUser(steamIDs[i])
+        for(i = 0; i < remainingUsers.length ; i++) {
+            const currentUser = await users.getUser(remainingUsers[i])
             sharedAppIDs = getCommonGames(sharedAppIDs, currentUser.appIDs)
         }
 
         return Promise.all(sharedAppIDs.map(appID => getGame(appID)))
 
     } else {
-        console.log('You must input more than one steamID')
+        log.warn('You must input more than one steamID')
     }
 }
 
