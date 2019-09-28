@@ -23,7 +23,6 @@ const getCommonGames = (a, b) => {
     const smallerSet = (a.length > b.length) ? b : a 
     const largerSet = (a.length > b.length) ? a : b
     const commonGames = smallerSet.filter(appID => {
-        console.log(appID, largerSet.includes(appID))
         return largerSet.includes(appID)
     }) 
     return commonGames
