@@ -11,17 +11,17 @@ class Cache {
         })
     }
     
-    save = (key, obj) => {
+    save(key, obj) {
         this.cache.set(key, obj, (error, success) => {
             console.log( (!error && success ) ? `saved ${key} to the ${this.description} cache` : error ) 
         })
     }
     
-    get = (key) => {
+    get(key) {
         return this.cache.get(key)
     }
 
-    refreshTTL = (key) => {
+    refreshTTL(key) {
         this.cache.ttl(key, this.stdTTL)
         console.log(`updated ttl for ${key} to ${this.stdTTL}`)
     } 
