@@ -5,5 +5,12 @@
     "cache" : {
         "gameTTL": 900,
         "userTTL": 600
+    },
+    "mongo" : {
+        "url": "mongodb://localhost:27017/steam-game-picker",
+        "connectionOptions" : {
+            "useNewUrlParser": true,
+            "useCreateIndex": true
+        }
     }
 }

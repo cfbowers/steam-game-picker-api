@@ -1,3 +1,4 @@
+require('./data/mongoose')
 const express = require('express')
 const cors = require('cors')
 const gamesApiRouter = require('./routes/api/games')
