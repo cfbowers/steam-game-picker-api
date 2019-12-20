@@ -12,9 +12,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const appUser = new AppUser(req.body)
-        await appUser.save()
-        res.send(appUser)
+        const user = new AppUser(req.body)
+        const token = await user.generateAuthToken()
+        await user.save()
+        res.send({ user, token })
     } catch (e) {
         res.status(500).send({ error: e.message })
     }
