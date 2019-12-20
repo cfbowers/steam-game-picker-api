@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const users = require('../../util/users')
+const users = require('../util/steamUsers')
 
 
 router.get('/:steamID', async (req, res) => {

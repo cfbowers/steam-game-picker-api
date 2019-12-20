@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const games = require('../../util/games')
+const games = require('../util/games')
 
 
 router.get('/shared-appIDs', async (req, res) => {
