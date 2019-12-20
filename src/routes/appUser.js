@@ -1,8 +1,9 @@
 const router = require('express').Router()
+const auth = require('../middleware/auth')
 const AppUser = require('../data/models/appUser')
 
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
         res.send(await AppUser.find({}))
     } catch (e) {
