@@ -1,12 +1,6 @@
 const router = require('express').Router()
 const games = require('../../src/data/games')
 
-router.post('/preload', (req, res) => {
-    const appIDs = req.body.appIDs.split(',')
-    appIDs.forEach(appID => {
-        games.getGame(appID)  
-    })
-})
 
 router.get('/shared-appIDs', async (req, res) => {
     const steamIDs = req.query.steamIDs.split(',')
