@@ -1,7 +1,6 @@
-const steam = require('../util/steam')
+const steam = require('./steam')
 const Cache = require('../data/cache')
-const users = require('../data/users')
-const log = require('../util/winston')
+const users = require('./users')
 
 const gamesCache = new Cache('games', 1800)
 

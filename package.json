@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js -e=*"
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js -e=*"
   },
   "dependencies": {
     "config": "^3.1.0",
@@ -14,9 +14,7 @@
     "mongoose": "^5.6.4",
     "node-cache": "^4.2.1",
     "querystring": "^0.2.0",
-    "request": "^2.88.0",
-    "steamapi": "^2.0.7",
-    "winston": "^3.2.1"
+    "steamapi": "^2.0.7"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
