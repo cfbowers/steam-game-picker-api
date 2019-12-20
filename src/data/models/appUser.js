@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const appUserSchema = mongoose.Schema({
     steamApiKey: String,
@@ -16,8 +17,21 @@ const appUserSchema = mongoose.Schema({
             if (!validator.isEmail(value))
                 throw new Error(`${value} is not a valid email address`)
         }
-    }
+    },
+    tokens: [{
+      token: { type: String, required: true }  
+    }]
 })
+
+appUserSchema.methods.generateAuthToken = async function() {
+    const user = this 
+    const token = jwt.sign({ _id: user.id }, 'jwttotrot')
+
+    user.tokens.push({ token })
+    await user.save()
+    
+    return token
+}
 
 appUserSchema.statics.findByCredentials = async (email, password) => {
     const user = await AppUser.findOne( { email: email } )
@@ -32,7 +46,6 @@ appUserSchema.statics.findByCredentials = async (email, password) => {
 
     return user
 }
-
 
 appUserSchema.pre('save', async function(next) {
     const appUser = this

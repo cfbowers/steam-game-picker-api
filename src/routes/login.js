@@ -3,10 +3,11 @@ const AppUser = require('../data/models/appUser')
 
 router.post('/', async (req, res) => {
     try {
-        const authUser = await AppUser.findByCredentials(req.body.email, req.body.password)
-        res.send(authUser)
+        const user = await AppUser.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
     } catch (e) {
-        res.status(400).send()
+        res.status(400).send({ error: e.message })
     }
 })
 
