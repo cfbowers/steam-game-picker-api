@@ -1,9 +1,11 @@
 require('./data/mongoose')
 const express = require('express')
 const cors = require('cors')
+
 const gameRouter = require('./routes/game')
 const steamUserRouter = require('./routes/steamUser')
 const appUserRouter = require('./routes/appUser')
+const loginRouter = require('./routes/login')
 
 
 const app = express()
@@ -16,5 +18,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/games', gameRouter)
 app.use('/steam-users', steamUserRouter)
 app.use('/app-users', appUserRouter)
+app.use('/login', loginRouter)
 
 app.listen(port, () => console.log('Server is running on port: ', port))

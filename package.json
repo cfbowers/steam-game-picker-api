@@ -12,6 +12,7 @@
     "config": "^3.1.0",
     "cors": "^2.8.5",
     "express": "~4.16.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.4",
     "node-cache": "^4.2.1",

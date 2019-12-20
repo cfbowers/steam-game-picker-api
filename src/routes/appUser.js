@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const AppUser = require('../data/models/appUser')
 
+
 router.get('/', async (req, res) => {
     try {
         res.send(await AppUser.find({}))

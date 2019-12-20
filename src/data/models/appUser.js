@@ -15,9 +15,24 @@ const appUserSchema = mongoose.Schema({
         validate: (value) => {
             if (!validator.isEmail(value))
                 throw new Error(`${value} is not a valid email address`)
-        } 
+        }
     }
 })
+
+appUserSchema.statics.findByCredentials = async (email, password) => {
+    const user = await AppUser.findOne( { email: email } )
+
+    if (!user)
+        throw new Error('unable to login')
+
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if (!isMatch)
+        throw new Error('unable to login')
+
+    return user
+}
+
 
 appUserSchema.pre('save', async function(next) {
     const appUser = this
