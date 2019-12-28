@@ -4,7 +4,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const userSchema = mongoose.Schema({
-    steamApiKey: String,
+    steamApiKey: { 
+        type: String,
+        default: ''
+    },
     password: {
         type: String,
         required: true
