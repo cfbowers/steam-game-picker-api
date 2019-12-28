@@ -3,7 +3,7 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-const appUserSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     steamApiKey: String,
     password: {
         type: String,
@@ -23,7 +23,7 @@ const appUserSchema = mongoose.Schema({
     }]
 })
 
-appUserSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function() {
     const user = this 
     const token = jwt.sign({ _id: user.id }, 'jwttotrot')
 
@@ -33,8 +33,8 @@ appUserSchema.methods.generateAuthToken = async function() {
     return token
 }
 
-appUserSchema.statics.findByCredentials = async (email, password) => {
-    const user = await AppUser.findOne( { email: email } )
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne( { email: email } )
 
     if (!user)
         throw new Error('unable to login')
@@ -47,14 +47,14 @@ appUserSchema.statics.findByCredentials = async (email, password) => {
     return user
 }
 
-appUserSchema.pre('save', async function(next) {
-    const appUser = this
-    if (appUser.isModified('password')) {
-        appUser.password = await bcrypt.hash(appUser.password, 8)
+userSchema.pre('save', async function(next) {
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
     }
     next()
 })
 
-const AppUser = mongoose.model('AppUser', appUserSchema)
+const User = mongoose.model('User', userSchema)
 
-module.exports = AppUser
+module.exports = User

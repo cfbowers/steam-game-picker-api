@@ -1,11 +1,11 @@
 const router = require('express').Router()
 const auth = require('../middleware/auth')
-const AppUser = require('../data/models/appUser')
+const User = require('../data/models/user')
 
 
 router.get('/', auth, async (req, res) => {
     try {
-        res.send(await AppUser.find({}))
+        res.send(await User.find({}))
     } catch (e) {
         res.status(500).send({ error: e.message })
     }
@@ -13,7 +13,7 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const user = new AppUser(req.body)
+        const user = new User(req.body)
         const token = await user.generateAuthToken()
         await user.save()
         res.send({ user, token })
@@ -24,15 +24,15 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const appUser = await AppUser.findById(req.params.id)
-        if (!appUser)
+        const user = await User.findById(req.params.id)
+        if (!user)
             return res.status(404).send({ error: `Unable to find user by id ${req.params.id}`})
 
         const updatedParams = Object.keys(req.body)
-        updatedParams.forEach(param => appUser[param] = req.body[param])
-        await appUser.save()
+        updatedParams.forEach(param => user[param] = req.body[param])
+        await user.save()
 
-        res.send(appUser)
+        res.send(user)
     } catch (e) {
         res.status(500).send({ error: e.message })
     }
@@ -40,11 +40,11 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const appUser = await AppUser.findByIdAndDelete(req.params.id)
-        if (!appUser)
+        const user = await User.findByIdAndDelete(req.params.id)
+        if (!user)
             return res.status(404).send({ error: `Unable to find user by id ${req.params.id}`})
 
-        res.send({ message: "successfully deleted appUser", appUser })
+        res.send({ message: "successfully deleted user", user })
     } catch (e) {
         res.status(500).send({ error: e.message })
     }

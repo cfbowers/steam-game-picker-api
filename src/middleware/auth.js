@@ -1,11 +1,11 @@
-const AppUser = require('../data/models/appUser')
+const User = require('../data/models/user')
 const jwt = require('jsonwebtoken')
 
 const auth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')
         const decodedToken = jwt.verify(token, 'jwttotrot')
-        const user = await AppUser.findOne( { _id: decodedToken._id, 'tokens.token': token } )
+        const user = await User.findOne( { _id: decodedToken._id, 'tokens.token': token } )
 
         if (!user)
             throw new Error()
