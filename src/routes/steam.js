@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const auth = require('../middleware/auth')
-const users = require('../util/steamUsers')
+
 
 router.use(auth)
 
