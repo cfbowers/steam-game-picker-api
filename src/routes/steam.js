@@ -1,10 +1,12 @@
 const router = require('express').Router()
+const auth = require('../middleware/auth')
 const users = require('../util/steamUsers')
 
+router.use(auth)
 
 router.get('/profile', async (req, res) => {
     try {
-        //Get user's steam profile data 
+        res.send(req.steam)
     } catch (e) {
         res.status(500).send(e)
     }
