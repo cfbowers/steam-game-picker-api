@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const User = require('../data/models/user') //I feel like I shouldn't need this
 const auth = require('../middleware/auth')
 const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
@@ -11,6 +10,7 @@ const home = 'http://localhost:3001/'
 
 const steamStrategy = (user) => {
     //user is the authenticated user's object
+    //I set it up this way so the api key could be based off of the logged in user
     return new SteamStrategy({ 
         returnURL: home + 'steam/auth/return', 
         realm: home, 
@@ -18,10 +18,8 @@ const steamStrategy = (user) => {
     }
     , async (identifier, profile, done) => {
         try {
-            const user = await User.findOne( { _id: user._id } )
-            console.log(user)
-            // obj.steamid = profile._json.steamid
-            // obj.fullSteamData = profile._json
+            user.steamid = profile._json.steamid
+            await user.save()
             return done()
         } catch (e) {
             console.log(e)

@@ -4,15 +4,19 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const userSchema = mongoose.Schema({
-    steamApiKey: { 
+    steamid: {
         type: String,
         default: ''
-    },
-    password: {
+    }
+    , steamApiKey: { 
+        type: String,
+        default: ''
+    }
+    , password: {
         type: String,
         required: true
-    },
-    email: { 
+    }
+    , email: { 
         type: String, 
         index: true,
         required: true,
@@ -20,8 +24,8 @@ const userSchema = mongoose.Schema({
             if (!validator.isEmail(value))
                 throw new Error(`${value} is not a valid email address`)
         }
-    },
-    tokens: [{
+    }
+    , tokens: [{
       token: { type: String, required: true }  
     }]
 })
