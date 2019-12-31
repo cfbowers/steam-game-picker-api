@@ -1,4 +1,5 @@
 const User = require('../data/models/user')
+const SteamUser = require('../data/models/steamUser')
 const jwt = require('jsonwebtoken')
 const Steam = require('steamapi')
 
@@ -10,9 +11,6 @@ const auth = async (req, res, next) => {
 
         if (!user)
             throw new Error()
-
-        if (user && user.steamApiKey)
-            req.steam = new Steam(user.steamApiKey)
 
         req.user = user
         req.token = token

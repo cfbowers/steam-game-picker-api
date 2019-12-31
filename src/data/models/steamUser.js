@@ -1,18 +1,23 @@
 const mongoose = require('mongoose')
 
-const SteamUser = mongoose.model('SteamUser', {
-    realName: String, 
-    nickname: String, 
-    steamID: { 
+const steamUserSchema = mongoose.Schema({
+    steamid: { 
         type: String, 
         index: true, 
         required: true,
         minlength: 17,
-        maxlength: 17  
+        maxlength: 17
     },
-    avatar: Object, 
-    friends: Array, 
-    appIDs: Array, 
+    realname: String, 
+    personaname: String, 
+    avatar: String, 
+    avatarmedium: String, 
+    avatarfull: String, 
+    communityvisibilitystate: Number,
+    profilestate: Number
 })
+
+
+const SteamUser = mongoose.model('SteamUser', steamUserSchema)
 
 module.exports = SteamUser
