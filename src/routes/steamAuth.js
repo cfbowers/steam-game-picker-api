@@ -2,7 +2,7 @@ const router = require('express').Router()
 const auth = require('../middleware/auth')
 const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
-const steamUtil = require('../util/steam')
+const steamUtil = require('../util/SteamUtil')
 
 
 router.use(auth)

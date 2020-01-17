@@ -1,5 +1,6 @@
 require('./data/mongoose')
 const express = require('express')
+const cors = require('cors')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -7,6 +8,7 @@ const port = process.env.PORT || 3001
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cors())
 
 app.use('/steam', require('./routes/steam'))
 app.use('/steam/auth', require('./routes/steamAuth'))
