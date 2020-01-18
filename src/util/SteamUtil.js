@@ -1,6 +1,7 @@
 const SteamAPI = require('steamapi')
 const SteamUser = require('../data/models/steamUser')
 const SteamGame = require('../data/models/steamGame')
+const helpers = require('./helpers')
 
 
 class SteamUtil {
@@ -8,29 +9,20 @@ class SteamUtil {
     this.steamApi = new SteamAPI(key)
   }
 
-  idAndName = (dbUserOrGame) => {
-    let name = ''
-    let id = ''
-
-    if (dbUserOrGame.steamID) {
-      name = dbUserOrGame.nickname || dbUserOrGame.realName || undefined
-      id = dbUserOrGame.steamID
-    }
-    
-    if (dbUserOrGame.steam_appid) {
-      name = dbUserOrGame.name || dbUserOrGame.short_description || undefined
-      id = dbUserOrGame.steam_appid
-    }
-
-    return `${id}: ${name}`
-  }
-
   getFriendIds = async (steamid) => {
-    const friends = await this.steamApi.getUserFriends(steamid)
+    let friends = [] 
+    //If there's an error getting friends then a blank array will be returned
+    try { friends = await this.steamApi.getUserFriends(steamid) }
+    catch { }
     return friends.map(friend => friend.steamID) 
   }
 
-  getFriendsDetails = async (steamid, options) => {
+  /**
+	 * calls getOrNewSteamUser for each friend of the steamId supplied
+	 * @param {string} steamId steamId of user whose friend details will be retrieved
+	 * @param {Object} [options={}] options for handling updates, appIds and friends -- same as getOrNewSteamUser's options
+	 */
+  getFriendsDetails = async (steamid, options = {}) => {
     const friendIds = await this.getFriendIds(steamid)
     const friendsDetails = []
     for(let i = 0; i < friendIds.length; i++ ) {
@@ -41,44 +33,62 @@ class SteamUtil {
   }
 
   saveFriendIds = async (dbSteamUser) => {
-    dbSteamUser.friends = await this.getFriendIds(dbSteamUser.steamID)
-    await dbSteamUser.save()
-    console.log(`got and saved friendIds for ${this.idAndName(dbSteamUser)}`) 
+    const friends = await this.getFriendIds(dbSteamUser.steamID)
+    if (friends.length > 0) {
+      dbSteamUser.friends 
+      await dbSteamUser.save()
+      return console.log(`got and saved friendIds for ${helpers.idAndName(dbSteamUser)}`) 
+    }
+    console.log(`could not getfriendIds for ${helpers.idAndName(dbSteamUser)}`)
   }
 
   saveAppIds = async (dbSteamUser) => {
     const games = await this.steamApi.getUserOwnedGames(dbSteamUser.steamID) 
     dbSteamUser.appIds = games.map(game =>  game.appID)
     await dbSteamUser.save()
-    console.log(`got and saved appIds for ${this.idAndName(dbSteamUser)}`)
+    console.log(`got and saved appIds for ${helpers.idAndName(dbSteamUser)}`)
   }
 
+  /**
+	 * Gets a SteamUser from the db, or gets profile data from the api and saves it to the db
+	 * @param {string} steamId steamId of user
+	 * @param {Object} [options={}] options for handling updates, appIds and friends
+	 * @param {boolean} [options.saveAppIds=true] appIds will be retrieved and saved for the user if they don't exist
+	 * @param {boolean} [options.saveFriendIds=true] friend steamIds will be retrieved and saved for the user if they don't exist
+	 * @param {boolean} [options.update=false] 'true' will refetch user profile details from the api. if saveAppIds or
+   * saveFriendIds are specified are also specified, appIds or friend steamIds will be retrieved and saved regardless
+   * if they exist or not.  
+	 */
   getOrNewSteamUser = async (steamid, options = {}) => {
     try {
       if(!steamid)
         throw new Error('you must provide a steamid')
   
-      let dbSteamUser = await SteamUser.findOne( { steamID: steamid } )
-  
-      if (!dbSteamUser) { 
-        const userData = await this.steamApi.getUserSummary(steamid)
-        dbSteamUser = await new SteamUser(userData)
-        await dbSteamUser.save()
-        console.log(`saved new user ${this.idAndName(dbSteamUser)}`)
-      }
+      const defaultOptions = { saveAppIds: true, saveFriendIds: true, update: false }
+      options = Object.assign(defaultOptions, options)
 
-      if (options.update) { 
+      let dbSteamUser = await SteamUser.findOne( { steamID: steamid } )
+
+      if (options.update && dbSteamUser) { 
         const userSummary = await this.steamApi.getUserSummary(steamid)
         const updateKeys = Object.keys(userSummary)
         updateKeys.forEach(key => dbSteamUser[key] = userSummary[key])
         await dbSteamUser.save()
-        console.log(`updated ${this.idAndName(dbSteamUser)}`)
+        console.log(`updated SteamUser ${helpers.idAndName(dbSteamUser)}`)
       }
       
-      if (options.includeAppIds && (dbSteamUser.appIds.length == 0 || options.update )) 
+      if (!dbSteamUser) { 
+        const userData = await this.steamApi.getUserSummary(steamid)
+        dbSteamUser = await new SteamUser(userData)
+        await dbSteamUser.save()
+        console.log(`saved new SteamUser ${helpers.idAndName(dbSteamUser)}`)
+      }
+
+      //revisit this logic
+      if ((options.saveAppIds && options.update ) || (options.saveAppIds && dbSteamUser.appIds.length == 0))
         await this.saveAppIds(dbSteamUser)
 
-      if (options.includeFriendIds && (dbSteamUser.friends.length == 0 || options.update )) 
+      if ((options.saveFriendIds && options.update ) || (options.saveFriendIds && dbSteamUser.friends.length == 0)) 
         await this.saveFriendIds(dbSteamUser)
       
       return dbSteamUser
@@ -88,26 +98,21 @@ class SteamUtil {
 
     }
   }
-
-  getCommon = (a, b) => {
-    const smallerSet = (a.length > b.length) ? b : a 
-    const largerSet = (a.length > b.length) ? a : b
-    const common = smallerSet.filter(appID => {
-      return largerSet.includes(appID)
-    }) 
-    return common
-  }
   
+	/**
+	 * Gets shared games for a set of steamIds
+	 * @param {Array} steamIDs array of steamIds 
+	 */
   getSharedGames = async (steamIDs) => {
     try {
       const firstUser = await this.getOrNewSteamUser(steamIDs[0])
       const secondUser = await this.getOrNewSteamUser(steamIDs[1])
       const remainingUsers = steamIDs.slice(2)
-      let sharedAppIDs = this.getCommon(firstUser.appIds, secondUser.appIds)
+      let sharedAppIDs = helpers.getCommon(firstUser.appIds, secondUser.appIds)
 
       for(let i = 0; i < remainingUsers.length ; i++) {
         const currentUser = await this.getOrNewSteamUser(remainingUsers[i])
-        sharedAppIDs = this.getCommon(sharedAppIDs, currentUser.appIds)
+        sharedAppIDs = helpers.getCommon(sharedAppIDs, currentUser.appIds)
       }
 
       const sharedGameDetails = []
@@ -137,7 +142,7 @@ class SteamUtil {
       if (!gameDetails.error) {
         Object.keys(gameDetails).forEach(key => dbGame[key] = gameDetails[key])
         await dbGame.save()
-        console.log(`updated ${this.idAndName(dbGame)}`)
+        console.log(`updated ${helpers.idAndName(dbGame)}`)
       }
     }
     
@@ -145,7 +150,7 @@ class SteamUtil {
       const gameDetails = await this.getGameDetails(appId)
       dbGame = await new SteamGame(gameDetails)
       await dbGame.save()
-      console.log(`saved new game ${this.idAndName(dbGame)}`)
+      console.log(`saved new game ${helpers.idAndName(dbGame)}`)
     }
     
     return dbGame

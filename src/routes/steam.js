@@ -5,25 +5,38 @@ const SteamUtil = require('../util/SteamUtil')
 
 router.use(auth)
 
-//Every time this is hit the user, their friends and appIds are updated. 
-//May need to revist this
 router.get('/profile', async (req, res) => {
   try {
     const steamUtil = new SteamUtil(req.user.steamApiKey)
-    const user = await steamUtil.getOrNewSteamUser(
-      req.user.steamid, { includeAppIds: true, includeFriendIds: true })
+    const user = await steamUtil.getOrNewSteamUser(req.user.steamid)
     res.status(200).send(user)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
+router.post('/profile/update', async (req, res) => {
+  try {
+    let success = 'completed update of profile'
+    const steamUtil = new SteamUtil(req.user.steamApiKey)
+    const includeFriendsInUpdate = (req.query.includeFriends === 'true')
+    await steamUtil.getOrNewSteamUser(req.user.steamid, { update: true })
+    if (includeFriendsInUpdate) {
+      //Will not get friends of friends, on friends and their appIds
+      await steamUtil.getFriendsDetails(req.user.steamid, { update: true, saveFriendIds: false })
+      success += ' and profiles of friends'
+    }
+    res.status(200).send({ success })
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+
 router.get('/friends', async (req, res) => {
   try {
     const steamUtil = new SteamUtil(req.user.steamApiKey)
-    const details = await steamUtil.getFriendsDetails(
-      req.user.steamid, { includeAppIds: true, update: true }
-    )
+    const details = await steamUtil.getFriendsDetails(req.user.steamid)
     res.status(200).send(details)
   } catch (e) {
     res.status(500).send(e)
@@ -43,6 +56,7 @@ router.get('/shared-games', async (req, res) => {
       return res.status(400).send({ error: 'you must provide more than one steamId' })
 
     const steamUtil = new SteamUtil(req.user.steamApiKey)
+    steamUtil.get
     const sharedGames = await steamUtil.getSharedGames(steamIds)
 
     res.status(200).send(sharedGames)
