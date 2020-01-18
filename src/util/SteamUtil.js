@@ -53,9 +53,9 @@ class SteamUtil {
 	 * Gets a SteamUser from the db, or gets profile data from the api and saves it to the db
 	 * @param {string} steamId steamId of user
 	 * @param {Object} [options={}] options for handling updates, appIds and friends
-	 * @param {boolean} [options.saveAppIds=true] appIds will be retrieved and saved for the user if they don't exist
-	 * @param {boolean} [options.saveFriendIds=true] friend steamIds will be retrieved and saved for the user if they don't exist
-	 * @param {boolean} [options.update=false] 'true' will refetch user profile details from the api. if saveAppIds or
+	 * @param {boolean} [options.includeAppIds=false] appIds will be retrieved and saved for the user if they don't exist
+	 * @param {boolean} [options.includeFriendIds=false] friend steamIds will be retrieved and saved for the user if they don't exist
+	 * @param {boolean} [options.update=false] 'true' will refetch user profile details from the api. if includeAppIds or
    * saveFriendIds are specified are also specified, appIds or friend steamIds will be retrieved and saved regardless
    * if they exist or not.  
 	 */
@@ -64,9 +64,6 @@ class SteamUtil {
       if(!steamid)
         throw new Error('you must provide a steamid')
   
-      const defaultOptions = { saveAppIds: true, saveFriendIds: true, update: false }
-      options = Object.assign(defaultOptions, options)
-
       let dbSteamUser = await SteamUser.findOne( { steamID: steamid } )
 
       if (options.update && dbSteamUser) { 
@@ -85,10 +82,10 @@ class SteamUtil {
       }
 
       //revisit this logic
-      if ((options.saveAppIds && options.update ) || (options.saveAppIds && dbSteamUser.appIds.length == 0))
+      if ((options.includeAppIds && options.update ) || (options.includeAppIds && dbSteamUser.appIds.length == 0))
         await this.saveAppIds(dbSteamUser)
 
-      if ((options.saveFriendIds && options.update ) || (options.saveFriendIds && dbSteamUser.friends.length == 0)) 
+      if ((options.includeFriendIds && options.update ) || (options.includeFriendIds && dbSteamUser.friends.length == 0)) 
         await this.saveFriendIds(dbSteamUser)
       
       return dbSteamUser

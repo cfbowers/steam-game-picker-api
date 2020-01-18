@@ -1,5 +1,6 @@
 const User = require('../data/models/user')
 const jwt = require('jsonwebtoken')
+const SteamUtil = require('../util/SteamUtil')
 
 const auth = async (req, res, next) => {
   try {
@@ -12,6 +13,10 @@ const auth = async (req, res, next) => {
 
     req.user = user
     req.token = token
+
+    if (req.user.steamApiKey)
+      req.steamUtil = new SteamUtil(req.user.steamApiKey)
+
 
     next()
         
