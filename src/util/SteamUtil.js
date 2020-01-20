@@ -100,7 +100,7 @@ class SteamUtil {
 	 * Gets shared games for a set of steamIds
 	 * @param {Array} steamIDs array of steamIds 
 	 */
-  getSharedGames = async (steamIDs) => {
+  getSharedGames = async (steamIDs, platforms = undefined) => {
     try {
       const firstUser = await this.getOrNewSteamUser(steamIDs[0])
       const secondUser = await this.getOrNewSteamUser(steamIDs[1])
@@ -112,15 +112,26 @@ class SteamUtil {
         sharedAppIDs = helpers.getCommon(sharedAppIDs, currentUser.appIds)
       }
 
-      const sharedGameDetails = []
+      let sharedGameDetails = []
       for(let j = 0; j < sharedAppIDs.length; j++) {
         const game = await this.getOrNewSteamGame(sharedAppIDs[j])
         sharedGameDetails.push(game)
       }
 
+
+      if (platforms) {
+        sharedGameDetails = sharedGameDetails.filter((sharedGame) => {
+          for(let i = 0; i < platforms.length; i++) 
+            if (!sharedGame.platforms || !sharedGame.platforms[platforms[i]]) 
+              return false 
+          return true
+        })
+      }
+
       return sharedGameDetails
 
     } catch (e) {
+      console.log(e)
       return e
     }
   }

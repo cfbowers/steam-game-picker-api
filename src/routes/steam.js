@@ -47,6 +47,7 @@ router.get('/friends', async (req, res) => {
 router.get('/shared-games', async (req, res) => {
   try {
     let steamIds = req.query.steamIds
+    let platforms = req.query.platforms ? req.query.platforms.split(',') : undefined
 
     if (!steamIds)
       return res.status(400).send(
@@ -58,7 +59,7 @@ router.get('/shared-games', async (req, res) => {
       return res.status(400).send(
         { error: 'you must provide more than one steamId' })
 
-    const sharedGames = await req.steamUtil.getSharedGames(steamIds)
+    const sharedGames = await req.steamUtil.getSharedGames(steamIds, platforms)
     res.status(200).send(sharedGames)
     
   } catch (e) { 
