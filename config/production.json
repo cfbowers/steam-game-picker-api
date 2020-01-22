@@ -1,18 +1,9 @@
 {
-    "steam": {
-        "key": "D33F1E31EBC53CA8B78168933A324732",
-        "apiCallTimeout": 1000
-    },
-
-    "mongo" : {
-        "url": "mongodb+srv://mongoAdmin:gj4M5QE9HjjemuCQ@cluster0-gmyx9.mongodb.net/steam-game-picker?retryWrites=true&w=majority",
-        "collections": {
-            "user-data": "all-user-data",
-            "all-games": "games"
-        },
-        "connection-options" : {
-            "useNewUrlParser": true,
-            "useCreateIndex": true
-        }
+  "mongo" : {
+    "url": "mongodb+srv://mongoAdmin:gj4M5QE9HjjemuCQ@cluster0-gmyx9.mongodb.net/steam-game-picker-api?retryWrites=true&w=majority",
+    "connection-options" : {
+      "useNewUrlParser": true,
+      "useCreateIndex": true
     }
+  }
 }

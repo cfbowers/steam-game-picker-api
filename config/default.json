@@ -1,16 +1,9 @@
 {
-    "steam": {
-        "key": "D33F1E31EBC53CA8B78168933A324732"
-    },
-    "cache" : {
-        "gameTTL": 900,
-        "userTTL": 600
-    },
-    "mongo" : {
-        "url": "mongodb://localhost:27017/steam-game-picker",
-        "connectionOptions" : {
-            "useNewUrlParser": true,
-            "useCreateIndex": true
-        }
+  "mongo" : {
+    "url": "mongodb://localhost:27017/steam-game-picker",
+    "connectionOptions" : {
+      "useNewUrlParser": true,
+      "useCreateIndex": true
     }
+  }
 }
