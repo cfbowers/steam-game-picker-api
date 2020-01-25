@@ -13,6 +13,14 @@ router.post('/login', async (req, res) => {
   }
 })
 
+router.post('/validate', auth, async (req, res) => {
+  try {
+    res.status(200).send({ tokenValid: true })
+  } catch (e){
+    res.status(400).send({ error: e.message })
+  }
+})
+
 router.post('/logout', auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => token.token != req.token)

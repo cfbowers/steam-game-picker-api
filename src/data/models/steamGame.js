@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 
 const steamGameSchema = mongoose.Schema({
   steam_appid: {
-    type: String, 
+    type: Number, 
     required: true, 
-    alias: 'appId',
     index: {
       unique: true, 
       dropDups: true
