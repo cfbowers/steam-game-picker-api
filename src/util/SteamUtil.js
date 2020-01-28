@@ -143,7 +143,7 @@ class SteamUtil {
   
   getOrNewSteamGame = async (appId) => {
     let dbGame = await SteamGame.findOne({ steam_appid: appId })
-  
+
     //If there was an error saved last time, try to update
     if (dbGame && dbGame.error) {
       const gameDetails = await this.getGameDetails(appId)

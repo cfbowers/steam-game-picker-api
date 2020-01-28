@@ -4,14 +4,14 @@ const steamGameSchema = mongoose.Schema({
   steam_appid: {
     type: Number, 
     required: true, 
-    index: {
-      unique: true, 
-      dropDups: true
-    }
+    index: true
   },
   name: String, 
   is_free: Boolean,
+  website: String,
   platforms: Object,
+  categories: Array,
+  genres: Array,
   header_image: String, 
   background: String,
   short_description: String,
