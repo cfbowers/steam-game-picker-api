@@ -115,7 +115,8 @@ class SteamUtil {
       let sharedGameDetails = []
       for(let j = 0; j < sharedAppIDs.length; j++) {
         const game = await this.getOrNewSteamGame(sharedAppIDs[j])
-        sharedGameDetails.push(game)
+        if(!game.error)
+          sharedGameDetails.push(game)
       }
 
 
@@ -149,6 +150,7 @@ class SteamUtil {
       const gameDetails = await this.getGameDetails(appId)
       if (!gameDetails.error) {
         Object.keys(gameDetails).forEach(key => dbGame[key] = gameDetails[key])
+        delete dbGame.error
         await dbGame.save()
         console.log(`updated ${helpers.idAndName(dbGame)}`)
       }
