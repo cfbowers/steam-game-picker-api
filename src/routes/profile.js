@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.patch('/', async (req, res) => {
   try {
-    if (req.user.email === 'demo@demo.com')
+    if (req.user.email === 'hello@demo.com')
       throw new Error ('you cannot make changes for the demo profile')
 
     const updatedParams = Object.keys(req.body)
