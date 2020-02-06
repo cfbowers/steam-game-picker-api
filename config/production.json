@@ -1,4 +1,8 @@
 {
+  "app" : {
+    "feUrl" : "https://www.steamroulette.app",
+    "apiUrl": "https://api.steamroulette.app"
+  },
   "mongo" : {
     "url": "mongodb+srv://mongoAdmin:gj4M5QE9HjjemuCQ@cluster0-gmyx9.mongodb.net/steam-game-picker-api?retryWrites=true&w=majority",
     "connection-options" : {

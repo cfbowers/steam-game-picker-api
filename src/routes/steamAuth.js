@@ -1,14 +1,15 @@
 const router = require('express').Router()
 const passport = require('passport')
 const SteamStrategy = require('passport-steam').Strategy
+const config = require('config')
 
-
-const home = 'http://localhost:3001/'
+const home = config.get('app.apiUrl')
+const feUrl = config.get('app.feUrl')
 
 const steamStrategy = (req) => {
   //I set it up this way so the api key could be based off of the logged in user
   return new SteamStrategy(
-    { returnURL: `${home}steam/auth/return?token=${req.token}`, realm: home, apiKey: req.user.steamApiKey }
+    { returnURL: `${home}/steam/auth/return?token=${req.token}`, realm: home, apiKey: req.user.steamApiKey }
     , async (openIdUrl, steamProfile, done) => {
       req.user.steamid = steamProfile._json.steamid
       await req.user.save()
@@ -26,7 +27,7 @@ const steamAuth = passport.authenticate('steam', { failureRedirect: home, sessio
 
 
 router.get('/', passportSetup, steamAuth, (req, res) => {
-  res.redirect('http://localhost:3000/profile')
+  res.redirect(feUrl + '/profile')
 })
 
 router.get('/return', passportSetup, steamAuth, async (req, res) => { 
@@ -36,7 +37,7 @@ router.get('/return', passportSetup, steamAuth, async (req, res) => {
       includeFriendIds: true,
       update: true 
     })
-    res.redirect('http://localhost:3000/profile')
+    res.redirect(feUrl + '/profile')
   } catch (e) {
     res.status(500).send(e)
   }

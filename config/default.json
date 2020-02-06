@@ -1,4 +1,8 @@
 {
+  "app" : {
+    "feUrl" : "http://localhost:3000",
+    "apiUrl": "http://localhost:3001"
+  },
   "mongo" : {
     "url": "mongodb://localhost:27017/steam-game-picker",
     "connectionOptions" : {
