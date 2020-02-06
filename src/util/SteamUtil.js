@@ -13,7 +13,7 @@ class SteamUtil {
     let friends = [] 
     //If there's an error getting friends then a blank array will be returned
     try { friends = await this.steamApi.getUserFriends(steamid) }
-    catch (e) { console.log(e) }
+    catch (e) { console.log(e.message) }
     return friends.map(friend => friend.steamID) 
   }
 
@@ -35,7 +35,7 @@ class SteamUtil {
   saveFriendIds = async (dbSteamUser) => {
     const friends = await this.getFriendIds(dbSteamUser.steamID)
     if (friends.length > 0) {
-      dbSteamUser.friends 
+      dbSteamUser.friends = friends
       await dbSteamUser.save()
       return console.log(`got and saved friendIds for ${helpers.idAndName(dbSteamUser)}`) 
     }

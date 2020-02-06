@@ -4,7 +4,9 @@ const SteamUtil = require('../util/SteamUtil')
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.header('Authorization').replace('Bearer ', '')
+    const token = (req.query.token) 
+      ? req.query.token 
+      : req.header('Authorization').replace('Bearer ', '')
     const decodedToken = jwt.verify(token, 'jwttotrot')
     const user = await User.findOne( { _id: decodedToken._id, 'tokens.token': token } )
 
@@ -16,7 +18,6 @@ const auth = async (req, res, next) => {
 
     if (req.user.steamApiKey)
       req.steamUtil = new SteamUtil(req.user.steamApiKey)
-
 
     next()
         
