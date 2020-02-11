@@ -18,6 +18,7 @@ const auth = async (req, res, next) => {
 
     if (req.user.steamApiKey)
       req.steamUtil = new SteamUtil(req.user.steamApiKey)
+    
 
     next()
         

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js -e=*",
-    "startMongo": "/Users/charlesbowers/mongodb/bin/mongod --dbpath=/Users/charlesbowers/mongodb-data --directoryperdb"
+    "startMongo": "/Users/charlesbowers/Dev/mongodb/bin/mongod --dbpath=/Users/charlesbowers/Dev/mongodb-data --directoryperdb"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

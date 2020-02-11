@@ -10,6 +10,10 @@ class SteamUtil {
   }
 
   getFriendIds = async (steamid) => {
+    let dbSteamUser = await SteamUser.findOne( { steamID: steamid } )
+    if (dbSteamUser.friends) 
+      return dbSteamUser.friends
+
     let friends = [] 
     //If there's an error getting friends then a blank array will be returned
     try { friends = await this.steamApi.getUserFriends(steamid) }
