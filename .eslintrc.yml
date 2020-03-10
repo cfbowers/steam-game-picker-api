@@ -20,4 +20,7 @@ rules:
     - single
   semi:
     - error
-    - never
+    - always
+  max-len: 
+    - error 
+    - 100
