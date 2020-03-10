@@ -19,6 +19,6 @@ app.use('/auth', require('./routes/auth'));
 app.use('/profile', require('./routes/profile'));
 app.use('/users', require('./routes/user'));
 
-const server = app.listen(port, () => d(`server is running on ${port}`));
+const server = app.listen(port, () => d(`running on ${port}`));
 
 module.exports = server; 
