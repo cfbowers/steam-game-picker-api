@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "DEBUG=steam-roulette-api:* nodemon ./src/app.js -e=*",
-    "startMongo": "/Users/charlesbowers/Dev/mongodb/bin/mongod --dbpath=/Users/charlesbowers/Dev/mongodb-data --directoryperdb"
+    "startMongo": "/Users/charlesbowers/Dev/mongodb/bin/mongod --dbpath=/Users/charlesbowers/Dev/mongodb-data --directoryperdb",
+    "test": "mocha"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -21,9 +22,12 @@
     "passport": "^0.4.1",
     "passport-steam": "^1.0.12",
     "steamapi": "^2.0.7",
+    "supertest": "^4.0.2",
     "validator": "^12.1.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.0",
     "nodemon": "^1.19.1"
   }
 }
