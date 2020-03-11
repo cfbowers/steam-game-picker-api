@@ -23,5 +23,4 @@ describe('login endpoint', function () {
     expect(res.body.data).to.equal('wrong username or password');
   }
   
-  after(() => h.exit());
 });

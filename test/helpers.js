@@ -2,9 +2,13 @@
 const expect = require('chai').expect;
 const request = require('supertest'); 
 const server = require('../src/app');
+const mongoose = require('../src/data/mongoose');
 
-async function post(url, body) {
-  return res = await request(server).post(url).send(body);
+async function post(url, body, token = undefined) {
+  if (token) 
+    return await request(server).post(url).send(body).set('Authorization', `Bearer ${token}`);
+  else 
+    return await request(server).post(url).send(body);
 }
 
 function checkSuccess(res) { 
@@ -23,6 +27,7 @@ function checkFailure(res) {
 
 function exit() {
   server.close(); 
+  mongoose.disconnect();
 }
 
 module.exports = {
