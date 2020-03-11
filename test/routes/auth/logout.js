@@ -3,11 +3,15 @@ const User = require('../../../src/data/models/user');
 const h = require('../../helpers');
 
 describe('logout endpoints', function() {
+  const logoutUrl = '/auth/logout';
+
+  h.testUnauthenticatedPost(logoutUrl);
 
   it('removes current token on logout', async function() {
-    const loginRes = await h.post('/auth/login', { email: 'hello@demo.com', password: 'password' });
+    const email = 'hello@demo.com';
+    const loginRes = await h.post('/auth/login', { email, password: 'password' });
     const currentToken = loginRes.body.data.token;
-    const logoutRes = await h.post('/auth/logout', {}, currentToken);
+    const logoutRes = await h.post(logoutUrl, {}, currentToken);
     const user = await User.findOne({ email });
     const oldToken = user.tokens.find(token => token.token === currentToken);
 

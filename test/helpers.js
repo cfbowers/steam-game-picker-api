@@ -13,16 +13,23 @@ async function post(url, body, token = undefined) {
 
 function checkSuccess(res) { 
   expect(res.type, 'application/json');
-  expect(res.status, 200);
+  expect(res.status).to.equal(200);
   expect(res.body).to.have.property('status', 'success');
   expect(res.body).to.have.property('data');
 }
 
-function checkFailure(res) { 
+function checkFailure(res, expectedStatus = 400) { 
   expect(res.type, 'application/json');
-  expect(res.status, 400);
+  expect(res.status).to.equal(expectedStatus);
   expect(res.body).to.have.property('status', 'fail');
   expect(res.body).to.have.property('data');
+}
+
+function testUnauthenticatedPost(url, body = {}) {
+  it(`${url} fails when not authenticated`, async function() {
+    const res = await post(url, body); 
+    checkFailure(res, 401);
+  });
 }
 
 function exit() {
@@ -33,6 +40,7 @@ function exit() {
 module.exports = {
   checkSuccess,
   checkFailure,
+  testUnauthenticatedPost,
   post,
   exit
 };
