@@ -1,10 +1,10 @@
-/* eslint-disable no-undef */
-const h = require('./helpers'), 
-  expect = require('chai').expect, 
-  loginUrl = '/auth/login';
+const h = require('../../helpers'); 
+const expect = require('chai').expect;
+const loginUrl = '/auth/login';
 
 describe('login endpoint', function () {
-  const email = 'hello@demo.com', password = 'password';
+  const email = 'hello@demo.com';
+  const password = 'password';
 
   it('successful with valid credentials ', async function () {
     const res = await h.post(loginUrl, { email, password });

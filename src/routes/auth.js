@@ -20,7 +20,7 @@ router.post('/logout', auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => token.token != req.token);
     await req.user.save();
-    res.send({ success: 'logout successful'} );
+    res.send({ status: 'success', data: 'logout successful' });
   } catch (e) { res.status(400).send({ error: e.message }); }
 });
 

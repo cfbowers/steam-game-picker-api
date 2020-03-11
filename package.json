@@ -6,7 +6,7 @@
     "start": "node ./src/app.js",
     "dev": "DEBUG=steam-roulette-api:* nodemon ./src/app.js -e=*",
     "startMongo": "/Users/charlesbowers/Dev/mongodb/bin/mongod --dbpath=/Users/charlesbowers/Dev/mongodb-data --directoryperdb",
-    "test": "mocha"
+    "test": "mocha --recursive"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
