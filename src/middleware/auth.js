@@ -23,7 +23,7 @@ const auth = async (req, res, next) => {
     next()
         
   } catch (e) {
-    res.status(401).send( { error: 'you shall not pass!' } )
+    res.status(401).send( { status: 'fail', data: 'you shall not pass!' } )
   }
 }
 
