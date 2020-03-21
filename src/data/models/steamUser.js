@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const steamUserSchema = mongoose.Schema({
   steamID: { 
@@ -21,9 +21,9 @@ const steamUserSchema = mongoose.Schema({
     default: []
   },
   appIds: Array
-})
+});
 
 
-const SteamUser = mongoose.model('SteamUser', steamUserSchema)
+const SteamUser = mongoose.model('SteamUser', steamUserSchema);
 
-module.exports = SteamUser
+module.exports = SteamUser;

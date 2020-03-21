@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const steamGameSchema = mongoose.Schema({
   steam_appid: {
@@ -16,9 +16,9 @@ const steamGameSchema = mongoose.Schema({
   background: String,
   short_description: String,
   error: String
-})
+});
 
 
-const SteamGame = mongoose.model('SteamGame', steamGameSchema)
+const SteamGame = mongoose.model('SteamGame', steamGameSchema);
 
-module.exports = SteamGame
+module.exports = SteamGame;

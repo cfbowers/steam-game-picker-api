@@ -1,29 +1,14 @@
 const eslint = {
-  /* // react
-  'env': { 'browser': true, 'es6': true },
-  'extends': [ 'eslint:recommended', 'plugin:react/recommended' ],
-  'parserOptions': { 
-    'ecmaFeatures': { 'jsx': true }, 
-    'ecmaVersion': 2018, 
-    'sourceType': 'module' 
-  },
-  'plugins': [ 'react' ], 
-  // end react */
-
-  // node.js
   'env': { 'browser': true, 'commonjs': true, 'es6': true },
   'extends': 'eslint:recommended',
   'parserOptions': { 'ecmaVersion': 2018 },
-  // end node.js
-
-  //common
   'globals': { 'Atomics': 'readonly', 'SharedArrayBuffer': 'readonly' },
   'rules': { 
     'indent': [ 'error', 2 ],
     'linebreak-style': ['error', 'unix'],
     'quotes': ['error', 'single'],
     'semi': ['error', 'always'],
-    'max-len': ['error', 80],
+    'max-len': ['error', 100],
     'no-var': ['error'],
     'space-in-parens': ['error', 'never'],
     'array-bracket-spacing': ['error', 'always', { 'singleValue': false } ],

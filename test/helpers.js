@@ -5,10 +5,9 @@ const server = require('../src/app');
 const mongoose = require('../src/data/mongoose');
 
 async function post(url, body, token = undefined) {
-  if (token) 
-    return await request(server).post(url).send(body).set('Authorization', `Bearer ${token}`);
-  else 
-    return await request(server).post(url).send(body);
+  return (token)
+    ? await request(server).post(url).send(body).set('Authorization', `Bearer ${token}`)
+    : await request(server).post(url).send(body);
 }
 
 function checkSuccess(res) { 
@@ -37,10 +36,4 @@ function exit() {
   mongoose.disconnect();
 }
 
-module.exports = {
-  checkSuccess,
-  checkFailure,
-  testUnauthenticatedPost,
-  post,
-  exit
-};
+module.exports = { checkSuccess, checkFailure, testUnauthenticatedPost, post, exit };

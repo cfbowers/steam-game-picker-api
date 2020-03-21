@@ -15,7 +15,7 @@ describe('logout endpoints', function() {
     const currentToken = loginRes.body.data.token;
     const logoutRes = await h.post(logoutUrl, {}, currentToken);
     const user = await User.findOne({ email });
-    const oldToken = user.tokens.find(token => token.token === currentToken);
+    const oldToken = user.tokens.find((token) => token.token === currentToken);
 
     h.checkSuccess(logoutRes);
     expect(oldToken).to.be.undefined; 
