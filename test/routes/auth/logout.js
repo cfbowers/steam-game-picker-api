@@ -4,8 +4,10 @@ const h = require('../../helpers');
 
 describe('logout endpoints', function() {
   const logoutUrl = '/auth/logout';
+  const logoutAllUrl = '/auth/logoutAll';
 
   h.testUnauthenticatedPost(logoutUrl);
+  h.testUnauthenticatedPost(logoutAllUrl);
 
   it('removes current token on logout', async function() {
     const email = 'hello@demo.com';
