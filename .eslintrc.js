@@ -15,9 +15,9 @@ const eslint = {
     'object-curly-spacing': ['error', 'always'],
     'object-shorthand': ['error', 'always'],
     'block-spacing': ['error', 'always'],
-    'nonblock-statement-body-position': ['error', 'beside'],
+    'nonblock-statement-body-position': ['error', 'any'],
     'brace-style': ['error', '1tbs', { 'allowSingleLine': true } ],
-    'curly': ['error', 'multi-or-nest'],
+    // 'curly': ['error', 'multi-or-nest'],
     'arrow-parens': ['error', 'always'],
     'arrow-body-style': ['error', 'as-needed'],
     'no-confusing-arrow': ['error', { 'allowParens': true } ],
@@ -28,9 +28,7 @@ const eslint = {
     'capitalized-comments': ['error', 'never'],
     'lines-around-comment': ['error', { 
       'beforeBlockComment': true,
-      'afterBlockComment': true,
       'beforeLineComment': true, 
-      'afterLineComment': true
     }]
   }
 }; 

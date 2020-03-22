@@ -2,28 +2,19 @@ const User = require('../data/models/user');
 const jwt = require('jsonwebtoken');
 const SteamUtil = require('../util/SteamUtil');
 
-const auth = async (req, res, next) => {
-  try {
-    const token = (req.query.token) 
-      ? req.query.token 
-      : req.header('Authorization').replace('Bearer ', '');
-    const decodedToken = jwt.verify(token, 'jwttotrot');
-    const user = await User.findOne({ _id: decodedToken._id, 'tokens.token': token });
 
-    if (!user) throw new Error();
-
-    req.user = user;
-    req.token = token;
-
-    if (req.user.steamApiKey) req.steamUtil = new SteamUtil(req.user.steamApiKey);
-    
-
-    next();
-        
-  } catch (e) {
-    res.status(401).send({ status: 'fail', data: 'you shall not pass!' });
-  }
+module.exports = async function (req, res, next) {
+  const tokenInHeader = req.header('Authorization'); 
+  const tokenInQuery = req.query.token; 
+  
+  if (!tokenInHeader && !tokenInQuery) return next({ status: 400, message: 'no token supplied' });
+  const token = (tokenInHeader) ? tokenInHeader.replace('Bearer ', '') : tokenInQuery;
+  const decodedToken = jwt.verify(token, 'jwttotrot');
+  const user = await User.findOne({ _id: decodedToken._id, 'tokens.token': token });
+  
+  if (!user) return next({ status: 400, message: 'you shall not pass!' });
+  req.user = user;
+  req.token = token;
+  req.steamUtil = (user.steamApiKey) ? new SteamUtil(user.steamApiKey) : undefined;
+  next();    
 };
-
-module.exports = auth;
-

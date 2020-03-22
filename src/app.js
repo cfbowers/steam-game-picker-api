@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const d = require('debug')('steam-roulette-api:server');
+const errorHandler = require('./middleware/errorHandler');
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/steam/auth', require('./routes/steamAuth'));
 app.use('/auth', require('./routes/auth'));
 app.use('/profile', require('./routes/profile'));
 app.use('/users', require('./routes/user'));
+app.use(errorHandler);
 
 const server = app.listen(port, () => d(`running on ${port}`));
 

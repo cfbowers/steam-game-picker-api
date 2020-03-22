@@ -1,4 +1,4 @@
-const idAndName = (dbUserOrGame) => {
+function idAndName (dbUserOrGame) {
   let name = '';
   let id = '';
 
@@ -13,16 +13,12 @@ const idAndName = (dbUserOrGame) => {
   }
 
   return `${id}: ${name}`;
-};
+}
 
-const getCommon = (array1, array2) => {
+function getCommon (array1, array2) {
   const smallerSet = (array1.length > array2.length) ? array2 : array1; 
   const largerSet = (array1.length > array2.length) ? array1 : array2;
-  const common = smallerSet.filter((appID) => largerSet.includes(appID)); 
-  return common;
-};
+  return smallerSet.filter((appID) => largerSet.includes(appID)); 
+}
 
-module.exports = {
-  idAndName,
-  getCommon
-};
+module.exports = { idAndName, getCommon };

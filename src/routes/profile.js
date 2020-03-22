@@ -1,50 +1,22 @@
-//router for getting and modifying the logged in user's profile
-
 const router = require('express').Router();
 const auth = require('../middleware/auth');
-const bcrypt = require('bcryptjs');
+const profile = require('../util/profile');
+const success = require('../util/returnData').success; 
 
 router.use(auth);
 
-router.get('/', async (req, res) => {
-  try {
-    res.send(req.user);
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
-});
+router.get('/', (req, res) => res.send(success(req.user)));
 
-router.patch('/', async (req, res) => {
-  try {
-    if (req.user.email === 'hello@demo.com') throw new Error ('you cannot make changes for the demo profile');
-
-    const updatedParams = Object.keys(req.body);
-
-    if (updatedParams.includes('password')) {
-      const currentPasswordMatch = await bcrypt.compare(req.body.password, req.user.password);
-
-      if (!currentPasswordMatch) throw new Error('current password value was not correct');
-
-      if (!(req.body['newPassword'] === req.body['confirmNewPassword'])) throw new Error('new password values did not match');
-
-      req.user.password = req.body['newPassword'];
-    } else updatedParams.forEach((param) => req.user[param] = req.body[param]);
-    
-
-    await req.user.save();
-    res.send(req.user);
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
+router.patch('/', (req, res, next) => {
+  profile.updateProfile(req.user, req.body)
+    .then(() => res.send(success(req.user)))
+    .catch((err) => next(err));
 });
 
 router.delete('/', async (req, res) => {
-  try {
-    await req.user.remove();
-    res.send({ success: 'successfully deleted profile', deletedUser: req.user });
-  } catch (e) {
-    res.status(500).send({ error: e.message });
-  }
+  await req.user.remove();
+  res.send(success({ deletedUser: req.user }));
 });
+
 
 module.exports = router;

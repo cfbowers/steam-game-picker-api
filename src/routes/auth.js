@@ -1,34 +1,30 @@
 const router = require('express').Router();
 const User = require('../data/models/user');
 const auth = require('../middleware/auth');
+const success = require('../util/returnData').success;
+const logout = require('../util/auth').logout; 
 
 
-router.post('/login', async (req, res) => {
-  try {
-    const user = await User.findByCredentials(req.body.email, req.body.password);
-    const token = await user.generateAuthToken();
-    res.send({ status: 'success', data: { user, token } });
-  } catch (e) { res.status(400).send({ status: 'fail', data: e.message }); }
-});
+// authentication happens before res.send, so this only works if the user is auth'd
+router.post('/validate', auth, (req, res) => res.send(success()));
 
-router.post('/validate', auth, async (req, res) => {
-  try { res.status(200).send({ tokenValid: true }); } catch (e) { res.status(400).send({ error: e.message }); }
+router.post('/login', (req, res, next) => {
+  const email = req.body.email;
+  const pass = req.body.password;
+  User.findByCredentials(email, pass)
+    .then(async (user) => res.send(success({ user, token: await user.generateAuthToken() })))
+    .catch((err) => next(err));
 });
 
 router.post('/logout', auth, async (req, res) => {
-  try {
-    req.user.tokens = req.user.tokens.filter((token) => token.token != req.token);
-    await req.user.save();
-    res.send({ status: 'success', data: 'logout successful' });
-  } catch (e) { res.status(400).send({ error: e.message }); }
+  logout({ user: req.user, token: req.token }); 
+  res.send(success('logout successful'));
 });
 
 router.post('/logoutAll', auth, async (req, res) => {
-  try {
-    req.user.tokens = [];
-    await req.user.save();
-    res.send();
-  } catch (e) { res.status(400).send({ error: e.message }); }
+  logout({ user: req.user }, true); 
+  res.send(success('successfully logged out of all devices'));
 });
+
 
 module.exports = router;

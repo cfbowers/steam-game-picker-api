@@ -4,50 +4,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
-  steamid: { 
-    type: String, 
-    index: true,
-    default: ''
-  }
-  , steamApiKey: { 
-    type: String,
-    default: ''
-  }
-  , password: {
-    type: String,
-    required: true
-  }
-  , email: { 
-    type: String, 
-    index: true,
-    required: true,
-    unique: true,
-    validate: (value) => {
-      if (!validator.isEmail(value)) throw new Error(`${value} is not a valid email address`);
-    }
-  }
-  , tokens: [{
-    token: { type: String, required: true }  
-  }]
+  steamid: { type: String, index: true, default: '' }, 
+  steamApiKey: { type: String, default: '' }, 
+  password: { type: String, required: true }, 
+  email: { type: String, index: true, required: true, unique: true, validate: (value) => {
+    if (!validator.isEmail(value)) throw new Error(`${value} is not a valid email address`);
+  } }, 
+  tokens: [{ token: { type: String, required: true }  }]
 });
 
 userSchema.methods.generateAuthToken = async function() {
   const user = this; 
   const token = jwt.sign({ _id: user.id }, 'jwttotrot');
-
-  // const token = jwt.sign({ _id: user.id }, 'jwttotrot', { expiresIn: '2 days' })
-
   user.tokens.push({ token });
   await user.save();
-    
   return token;
 };
 
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
-  delete user.tokens;
-  delete user.password;
-  delete user.__v;
+  user.tokens = undefined;
+  user.password = undefined;
+  user.__v = undefined;
   return user;
 };
 
@@ -70,7 +48,6 @@ userSchema.statics.findByCredentials = async (email, password, isPassEncrypted =
 userSchema.pre('save', async function(next) {
   const user = this;
   if (user.isModified('password')) user.password = await bcrypt.hash(user.password, 8);
-  
   next();
 });
 

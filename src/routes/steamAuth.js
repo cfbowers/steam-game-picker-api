@@ -28,17 +28,16 @@ const passportSetup = (req, res, next) => {
 const steamAuth = passport.authenticate('steam', { failureRedirect: home, session: false });
 
 
-router.get('/', passportSetup, steamAuth, (req, res) => {
-  res.redirect(feUrl + '/profile');
-});
-
+router.get('/', passportSetup, steamAuth, (req, res) => res.redirect(feUrl + '/profile'));
 router.get('/return', passportSetup, steamAuth, async (req, res) => { 
   try {
-    await req.steamUtil.getOrNewSteamUser(req.user._json.steamid, { 
-      includeAppIds: true, 
-      includeFriendIds: true,
-      update: true 
-    });
+    await req.steamUtil.getOrNewSteamUser(
+      req.user._json.steamid, { 
+        includeAppIds: true, 
+        includeFriendIds: true,
+        update: true 
+      }
+    );
     res.redirect(feUrl + '/profile');
   } catch (e) {
     res.status(500).send(e);
