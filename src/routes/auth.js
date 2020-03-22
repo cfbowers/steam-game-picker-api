@@ -17,12 +17,12 @@ router.post('/login', (req, res, next) => {
 });
 
 router.post('/logout', auth, async (req, res) => {
-  logout({ user: req.user, token: req.token }); 
+  await logout({ user: req.user, token: req.token }); 
   res.send(success('logout successful'));
 });
 
 router.post('/logoutAll', auth, async (req, res) => {
-  logout({ user: req.user }, true); 
+  await logout({ user: req.user }, true); 
   res.send(success('successfully logged out of all devices'));
 });
 

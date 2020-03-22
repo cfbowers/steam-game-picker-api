@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
 const userSchema = mongoose.Schema({
   steamid: { type: String, index: true, default: '' }, 
   steamApiKey: { type: String, default: '' }, 
@@ -14,10 +15,9 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.methods.generateAuthToken = async function() {
-  const user = this; 
-  const token = jwt.sign({ _id: user.id }, 'jwttotrot');
-  user.tokens.push({ token });
-  await user.save();
+  const token = jwt.sign({ _id: this.id }, 'jwttotrot');
+  this.tokens.push({ token });
+  await this.save();
   return token;
 };
 
@@ -29,28 +29,19 @@ userSchema.methods.toJSON = function () {
   return user;
 };
 
-userSchema.statics.findByCredentials = async (email, password, isPassEncrypted = false) => {
+userSchema.statics.findByCredentials = async (email, password) => {
+  const genericError = 'wrong username or password';
   const user = await User.findOne({ email });
-
-  if (!user) throw new Error('wrong username or password');
- 
-  // i believe this isn't the right logic, but I'll come back.
-
-  const isMatch = (isPassEncrypted) 
-    ? (password === user.password) 
-    : await bcrypt.compare(password, user.password);
-
-  if (!isMatch) throw new Error('wrong username or password');
-
-  return user;
+  if (user && (await bcrypt.compare(password, user.password))) return user;
+  else throw new Error(genericError);
 };
 
 userSchema.pre('save', async function(next) {
-  const user = this;
-  if (user.isModified('password')) user.password = await bcrypt.hash(user.password, 8);
+  if (this.isModified('password')) this.password = await bcrypt.hash(this.password, 8);
   next();
 });
 
 const User = mongoose.model('User', userSchema);
+
 
 module.exports = User;

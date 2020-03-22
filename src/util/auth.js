@@ -1,4 +1,3 @@
-
 async function logout ({ user, token = '' }, logoutAll = false) {
   user.tokens = (logoutAll)
     ? []
