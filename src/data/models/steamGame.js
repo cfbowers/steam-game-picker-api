@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
 
 const steamGameSchema = mongoose.Schema({
-  steam_appid: {
-    type: Number, 
-    required: true, 
-    index: true
-  },
+  steam_appid: { type: Number, required: true, index: true },
   name: String, 
   is_free: Boolean,
   website: String,
