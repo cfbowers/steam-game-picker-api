@@ -12,7 +12,7 @@ function steamStrategy({ token, user }) {
     d(`got steamId: ${steamid} for steam user: '${personaname}'`);
     user.steamid = steamid;
     await user.save();
-    d(`applied ${steamid} to user ${user.email}`);
+    d(`applied steamId: ${steamid} to app user: '${user.email}'`);
     done(null, response);
   }; 
 
