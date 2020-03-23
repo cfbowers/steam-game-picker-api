@@ -1,6 +1,6 @@
 const error = require('../util/helpers/jSendData').error; 
 
-module.exports = function (err, req, res, next) {
+module.exports = function (err, _req, res, _next) {
   let status = 500; 
   let message = (typeof err === 'string') ? err : err.message;
   if (err.status) status = err.status; 

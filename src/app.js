@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require('./data/mongoose');
 const express = require('express');
 const cors = require('cors');
