@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+require('dotenv').config(); 
 require('./data/mongoose');
 const express = require('express');
 const cors = require('cors');
