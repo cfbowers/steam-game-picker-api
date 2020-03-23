@@ -1,7 +1,23 @@
 const bcrypt = require('bcryptjs');
+const success = require('../util/helpers/jSendData').success; 
 
 
-const updateProfile = async (user, updates) => {
+exports.get = (req, res) => res.send(success(req.user));
+
+exports.update = (req, res, next) => {
+  updateProfile(req.user, req.body)
+    .then(() => res.send(success(req.user)))
+    .catch((err) => next(err));
+};
+
+exports.delete = async (req, res) => {
+  await req.user.remove();
+  res.send(success({ deletedUser: req.user }));
+};
+
+
+
+async function updateProfile (user, updates) {
   const allowedImmediateUpdates = [ 'steamid', 'steamApiKey', 'email' ]; 
 
   if (user.email === 'hello@demo.com') 
@@ -18,14 +34,12 @@ const updateProfile = async (user, updates) => {
   const applicableUpdates = keysToUpdate.filter((key) => allowedImmediateUpdates.includes(key)); 
   applicableUpdates.forEach((key) => user[key] = updates[key]);     
   await user.save();
-};
+}
 
-const canUpdatePassword = async (user, { password, newPassword, confirmNewPassword }) => {
+async function canUpdatePassword (user, { password, newPassword, confirmNewPassword }) {
   console.log(password, newPassword, confirmNewPassword)
   const pwdMatch = await bcrypt.compare(user.password, password);
   if (!pwdMatch || (newPassword !== confirmNewPassword)) return false; 
   return true; 
-};
+}
 
-
-module.exports = { updateProfile }; 
