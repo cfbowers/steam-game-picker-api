@@ -1,7 +1,7 @@
 const SteamAPI = require('steamapi')
-const SteamUser = require('../data/models/steamUser')
-const SteamGame = require('../data/models/steamGame')
-const helpers = require('./helpers')
+const SteamUser = require('../../data/models/steamUser')
+const SteamGame = require('../../data/models/steamGame')
+const helpers = require('../helpers/common')
 
 
 class SteamUtil {

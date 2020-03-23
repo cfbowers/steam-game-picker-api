@@ -1,6 +1,6 @@
 const expect = require('chai').expect; 
 const User = require('../../../src/data/models/user');
-const h = require('../../helpers');
+const h = require('../../util/common');
 
 describe('logout endpoints', function() {
   const logoutUrl = '/auth/logout';

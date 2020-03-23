@@ -1,4 +1,4 @@
-const h = require('../../helpers'); 
+const h = require('../../util/common'); 
 const expect = require('chai').expect;
 const loginUrl = '/auth/login';
 

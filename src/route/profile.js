@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
-const profile = require('../util/profile');
-const success = require('../util/returnData').success; 
+const profile = require('../route-services/profile');
+const success = require('../util/helpers/jSendData').success; 
 
 router.use(auth);
 

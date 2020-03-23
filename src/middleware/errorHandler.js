@@ -1,4 +1,4 @@
-const error = require('../util/returnData').error; 
+const error = require('../util/helpers/jSendData').error; 
 
 module.exports = function (err, req, res, next) {
   let status = 500; 

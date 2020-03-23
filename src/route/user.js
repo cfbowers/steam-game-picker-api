@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const createUser = require('../routeServices/user').createUser; 
-const success = require('../util/returnData').success;
+const createUser = require('../route-services/user').createUser; 
+const success = require('../util/helpers/jSendData').success;
+
 
 router.post('/', (req, res, next) => {
   createUser(req.body)

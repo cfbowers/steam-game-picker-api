@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 const expect = require('chai').expect;
 const request = require('supertest'); 
-const server = require('../src/app');
-const mongoose = require('../src/data/mongoose');
+const server = require('../../src/app');
+const mongoose = require('../../src/data/mongoose');
 
 async function post(url, body, token = undefined) {
   return (token)

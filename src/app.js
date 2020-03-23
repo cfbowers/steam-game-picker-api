@@ -14,11 +14,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
-app.use('/steam', require('./routes/steam'));
-app.use('/steam/auth', require('./routes/steamAuth'));
-app.use('/auth', require('./routes/auth'));
-app.use('/profile', require('./routes/profile'));
-app.use('/users', require('./routes/user'));
+app.use('/steam', require('./route/steam'));
+app.use('/steam/auth', require('./route/steamAuth'));
+app.use('/auth', require('./route/auth'));
+app.use('/profile', require('./route/profile'));
+app.use('/users', require('./route/user'));
 app.use(errorHandler);
 
 const server = app.listen(port, () => d(`running on ${port}`));

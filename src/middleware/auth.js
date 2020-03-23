@@ -1,6 +1,6 @@
 const User = require('../data/models/user');
 const jwt = require('jsonwebtoken');
-const SteamUtil = require('../util/SteamUtil');
+const SteamUtil = require('../util/classes/SteamUtil');
 
 
 module.exports = async function (req, res, next) {
