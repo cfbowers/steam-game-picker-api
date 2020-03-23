@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const createUser = require('../route-services/user').createUser; 
+const createUser = require('../route-service/user').createUser; 
 const success = require('../util/helpers/jSendData').success;
 
 

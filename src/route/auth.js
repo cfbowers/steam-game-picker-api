@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 const success = require('../util/helpers/jSendData').success;
-const authService = require('../route-services/auth'); 
+const authService = require('../route-service/auth'); 
 
 
 // authentication happens before res.send, so this only works if the user is auth'd

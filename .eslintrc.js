@@ -4,6 +4,7 @@ const eslint = {
   'parserOptions': { 'ecmaVersion': 2018 },
   'globals': { 'Atomics': 'readonly', 'SharedArrayBuffer': 'readonly' },
   'rules': { 
+    'no-unused-vars': [ 'error', { 'args': 'none' }],
     'indent': [ 'error', 2 ],
     'linebreak-style': ['error', 'unix'],
     'quotes': ['error', 'single'],
