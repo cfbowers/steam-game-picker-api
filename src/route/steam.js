@@ -1,54 +1,35 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
+const updateSteamProfile = require('../route-service/steam').updateSteamProfile;
+const success = require('../util/helpers/jSendData').success;
 
 
 router.use(auth);
 
-router.get('/profile', async (req, res) => {
-  const user = await req.steamUtil.getOrNewSteamUser(
-    req.user.steamid, { includeAppIds: true, includeFriendIds: true });
-  res.status(200).send(user);
+router.get('/profile', async ({ steamUtil, user: { steamid } }, res) => {
+  const profileOptions = { includeAppIds: true, includeFriendIds: true };
+  const user = await steamUtil.getOrNewSteamUser(steamid, profileOptions);
+  res.send(success(user));
 });
 
-router.post('/profile/update', async (req, res) => {
-  let success = 'completed update of profile';
-  const includeFriendsInUpdate = (req.query.includeFriends === 'true');
-  await req.steamUtil.getOrNewSteamUser(
-    req.user.steamid, { update: true, includeAppIds: true, includeFriendIds: true });
-
-  if (includeFriendsInUpdate) {
-    await req.steamUtil.getFriendsDetails(
-      req.user.steamid, { update: true, includeAppIds: true });
-    success += ' and profiles of friends';
-  }
-
-  res.status(200).send({ success });
+router.post('/profile/update', async ({ user, steamUtil, query }, res, next) => {
+  await updateSteamProfile(user, steamUtil, (query.includeFriends === 'true'))
+    .then((msg) => res.send(success(msg)))
+    .catch((err) => next(err));
 });
 
-router.get('/friends', async (req, res) => {
-  const details = await req.steamUtil.getFriendsDetails(
-    req.user.steamid, { includeAppIds: true, includeFriendIds: false });
-  res.status(200).send(details);
+router.get('/friends', async ({ user: { steamid }, steamUtil }, res) => {
+  const friendsOptions = { includeAppIds: true, includeFriendIds: false }; 
+  const friends = await steamUtil.getFriendsDetails(steamid, friendsOptions);
+  res.send(success({ friends }));
 });
 
-
-router.get('/shared-games', async (req, res) => {
-  let steamIds = req.query.steamIds;
-  let platforms = req.query.platforms ? req.query.platforms.split(',') : undefined;
-
-  if (!steamIds) {
-    return res.status(400).send(
-      { error: 'you must provide the \'steamIds\' query param' }); 
-  }
-
-  steamIds = steamIds.split(',');
-
-  if(!(steamIds.length > 1)) {
-    return res.status(400).send(
-      { error: 'you must provide more than one steamId' }); 
-  }
-  const sharedGames = await req.steamUtil.getSharedGames(steamIds, platforms);
-  res.status(200).send(sharedGames);
+router.get('/shared-games', async ({ query: { steamIds }, steamUtil }, res, next) => {
+  const steamIdArray = steamIds.split(',');
+  if (steamIdArray.length <= 1) 
+    return next({ status: 400, message: 'more than 1 steamId is required' });
+  const sharedGames = await steamUtil.getSharedGames(steamIdArray);
+  res.send(success({ sharedGames }));
 });
 
 
