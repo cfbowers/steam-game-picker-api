@@ -1,9 +1,11 @@
-const User = require('../data/models/user');
+const { User } = require('../data/models/user');
 const jwt = require('jsonwebtoken');
 const SteamUtil = require('../util/classes/SteamUtil');
 
 
-module.exports = async function (req, res, next) {
+async function authenticate (req, res, next) {
+  if (req.method === 'POST' && [ '/users', '/auth/login' ].includes(req.url)) return next();
+
   const tokenInHeader = req.header('Authorization'); 
   const tokenInQuery = req.query.token; 
   
@@ -17,4 +19,7 @@ module.exports = async function (req, res, next) {
   req.token = token;
   req.steamUtil = (user.steamApiKey) ? new SteamUtil(user.steamApiKey) : undefined;
   next();    
-};
+}
+
+
+module.exports = authenticate; 

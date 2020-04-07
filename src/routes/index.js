@@ -1,31 +1,28 @@
 const router = require('express').Router();
-const auth = require('../middleware/auth');
 const pp = require('../middleware/passport');
-const authController = require('../controllers/authController');
-const userController = require('../controllers/userController');
-const profileController = require('../controllers/profileController');
-const steamController = require('../controllers/steamController');
-const steamAuthController = require('../controllers/steamAuthController');
+const { commonHandler, redirectHandler } = require('../routes/handlers/higherOrder');
+const userHandlers = require('./handlers/userHandlers'); 
+const authHandlers = require('./handlers/authHandlers'); 
+const steamHandlers = require('./handlers/steamHandlers');
 
 
-router.post('/auth/login', authController.login);
-router.post('/auth/validate', auth, authController.validate);
-router.post('/auth/logout', auth, authController.logout);
-router.post('/auth/logoutAll', auth, authController.logoutAll);
+router.post   ('/users', commonHandler(userHandlers.create));
 
-router.get('/profile', auth, profileController.get);
-router.patch('/profile', auth, profileController.update);
-router.delete('/profile', auth, profileController.delete);
+router.post   ('/auth/validateToken', commonHandler(authHandlers.validate));
+router.post   ('/auth/login', commonHandler(authHandlers.login));
+router.post   ('/auth/logout', commonHandler(authHandlers.logout)); 
+router.post   ('/auth/logoutAll', commonHandler(authHandlers.logout)); 
 
-router.get('/steam/profile', auth, steamController.getProfile);
-router.get('/steam/friends', auth,  steamController.getFriends);
-router.get('/steam/shared-games', auth, steamController.getSharedGames);
-router.post('/steam/profile', auth, steamController.updateProfile);
+router.get    ('/profile', commonHandler(userHandlers.read));
+router.patch  ('/profile', commonHandler(userHandlers.update));
+router.delete ('/profile', commonHandler(userHandlers.destroy));
 
-router.get('/steam/auth', auth, pp.setup, pp.steamAuth, steamAuthController.get);
-router.get('/steam/auth/return', auth, pp.setup, pp.steamAuth, steamAuthController.return);
-
-router.post('/users', userController.create);
+router.get    ('/steam/auth',        pp.setup, pp.steamAuth, redirectHandler(authHandlers.steamLogin));
+router.get    ('/steam/auth/return', pp.setup, pp.steamAuth, redirectHandler(authHandlers.steamReturn));
+router.get    ('/steam/profile',      commonHandler(steamHandlers.getProfile));
+router.get    ('/steam/friends',      commonHandler(steamHandlers.getFriends));
+router.get    ('/steam/shared-games', commonHandler(steamHandlers.getSharedGames));
+router.post   ('/steam/profile',      commonHandler(steamHandlers.updateProfile));
 
 
 module.exports = router;
