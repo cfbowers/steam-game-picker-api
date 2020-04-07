@@ -24,4 +24,4 @@ router.get    ('/steam/shared-games',                        steamHandlers.getSh
 router.post   ('/steam/profile',                             steamHandlers.updateProfile);
 
 
-module.exports = router;˝
+module.exports = router;
