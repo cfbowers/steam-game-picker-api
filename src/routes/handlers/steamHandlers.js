@@ -1,3 +1,4 @@
+const { defaultHandler } = require('./higherOrder'); 
 const { badRequest } = require('../../util/errors');
 
 const getProfile = (req) => {
@@ -34,4 +35,9 @@ const updateProfile = async (req) => {
   return 'completed update of profile' + ((includeFriends) ? ' and profiles of friends': ''); 
 }; 
 
-module.exports = { getProfile, getFriends, getSharedGames, updateProfile }; 
+module.exports = { 
+  getProfile: defaultHandler(getProfile), 
+  getFriends: defaultHandler(getFriends), 
+  getSharedGames: defaultHandler(getSharedGames), 
+  updateProfile: defaultHandler(updateProfile) 
+}; 

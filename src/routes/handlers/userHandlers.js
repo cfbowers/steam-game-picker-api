@@ -1,3 +1,4 @@
+const { defaultHandler } = require('./higherOrder'); 
 const { createUser, updateUser } = require('../services/userServices');
 
 
@@ -7,4 +8,9 @@ const create  = (req) => createUser(req.body);
 const update  = (req) => updateUser(req.user, req.body); 
 
 
-module.exports = { create, read, update, destroy }; 
+module.exports = { 
+  create: defaultHandler(create), 
+  read: defaultHandler(read), 
+  update: defaultHandler(update), 
+  destroy: defaultHandler(destroy) 
+}; 

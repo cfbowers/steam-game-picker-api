@@ -1,7 +1,7 @@
 const { success } = require('jsend'); 
 
 // these are used to wrap all handlers to prevent reuse of then/catch -- keeping it DRY! 
-function commonHandler (fn) {
+function defaultHandler (fn) {
   return function (req, res, next) {
     fn(req, res, next)
       .then((data) => res.send(success(data)))
@@ -17,4 +17,4 @@ function redirectHandler (fn) {
   }; 
 }
 
-module.exports = { commonHandler, redirectHandler }; 
+module.exports = { defaultHandler, redirectHandler }; 

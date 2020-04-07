@@ -4,13 +4,13 @@ const passport = require('passport');
 const home = require('config').get('app.apiUrl');
 
 
-exports.setup = function (req, res, next) {
+const setup = function (req, _res, next) {
   passport.use(steamStrategy(req));
   passport.initialize();
   next();
 };
 
-exports.steamAuth = passport.authenticate('steam', { failureRedirect: home, session: false });
+const steamAuth = passport.authenticate('steam', { failureRedirect: home, session: false });
 
 
 // setup this way so the api key could be based off of the logged in user
@@ -28,3 +28,5 @@ function steamStrategy({ token, user }) {
 
   return new SteamStrategy(strategyOptions, cb);
 }
+
+module.exports = { steamAuth, setup }; 
