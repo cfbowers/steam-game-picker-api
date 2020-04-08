@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
 
 const steamUserSchema = mongoose.Schema({
-  steamID: { type: String, alias: 'steamid', required: true, index: {
-    unique : true,
-    dropDups : true
-  } }, 
-  nickname: String,
-  realName: String,
-  personaname: String, 
-  avatar: Object, 
-  visibilityState: Number,
-  url: String,
-  friends: { type: Array, default: [] },
+  steamid: { type: String, required: true, index: { unique : true, dropDups : true } }, 
+  personaname: String,
+  realname: String,
+  avatar: String, 
+  avatarmedium: String, 
+  avatarfull: String, 
+  communityvisibilitystate: Number,
+  profilestate: Number, 
+  profileurl: String,
+  friends: Array,
   appIds: Array
 });
 

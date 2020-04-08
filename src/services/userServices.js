@@ -1,4 +1,4 @@
-const { User, allowedExternalUpdates } = require('../../data/models/user');
+const { User, allowedExternalUpdates } = require('../data/models/user');
 
 
 async function createUser(params) {

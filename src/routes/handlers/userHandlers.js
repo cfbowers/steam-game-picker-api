@@ -1,5 +1,5 @@
 const { defaultHandler } = require('./higherOrder'); 
-const { createUser, updateUser } = require('../services/userServices');
+const { createUser, updateUser } = require('../../services/userServices');
 
 
 const read    = async (req) => req.user; 

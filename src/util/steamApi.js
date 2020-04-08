@@ -17,7 +17,7 @@ const getFriends   = (key, steamid)  => get('/ISteamUser/GetFriendList/v1', { ke
 const getUserGames = (key, steamid)  => get('/IPlayerService/GetOwnedGames/v1', { key, steamid });
 
 async function getSteamUser (key, steamid) {
-  const result = get('/ISteamUser/GetPlayerSummaries/v2', { key, steamids: steamid });
+  const result = await get('/ISteamUser/GetPlayerSummaries/v2', { key, steamids: steamid });
   return result.response.players[0];
 }
 

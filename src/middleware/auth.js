@@ -1,6 +1,5 @@
 const { User } = require('../data/models/user');
 const jwt = require('jsonwebtoken');
-const SteamUtil = require('../util/classes/SteamUtil');
 const { badRequest, unauthorized } = require('../util/errors');
 
 
@@ -22,7 +21,6 @@ async function authenticate (req, _res, next) {
 
   req.user = user;
   req.token = token;
-  req.steamUtil = (user.steamApiKey) ? new SteamUtil(user.steamApiKey) : undefined;
   next();    
 }
 

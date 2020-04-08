@@ -1,6 +1,6 @@
-const SteamUser = require('../../data/models/steamUser');
-const SteamGame = require('../../data/models/steamGame');
-const api = require('../../util/steamApi'); 
+const SteamUser = require('../data/models/steamUser');
+const SteamGame = require('../data/models/steamGame');
+const api = require('../util/steamApi'); 
 
 
 const retrieveSteamUser = (steamid)     => SteamUser.findOne({ steamid }); 
@@ -9,16 +9,17 @@ const retrieveSteamGame = (steam_appid) => SteamGame.findOne({ steam_appid });
 async function getSteamUser(key, steamid) {
   let user = await retrieveSteamUser(steamid); 
   if (!user) {
-    user = SteamUser.new(await api.getUserDetails(key, steamid, false)); 
+    user = new SteamUser(await api.getUserDetails(key, steamid, false)); 
     await user.save(); 
   }
   return user; 
 }
 
 async function getSteamGame(appId) {
+  console.log(appId);
   let game = await retrieveSteamGame(appId); 
   if (!game) {
-    game = SteamGame.new(await api.getGameDetails(appId));
+    game = new SteamGame(await api.getGameDetails(appId));
     await game.save();
   }
   return game; 
@@ -44,4 +45,4 @@ function getCommonElements(first, second) {
 }
 
 
-module.exports = { getSharedGames };
+module.exports = { getSharedGames, getSteamUser };

@@ -1,5 +1,5 @@
 const { defaultHandler, redirectHandler } = require('./higherOrder'); 
-const us = require('../services/userServices');
+const us = require('../../services/userServices');
 const feUrl = require('config').get('app.feUrl');
 
 
