@@ -1,6 +1,7 @@
 const { defaultHandler } = require('./higherOrder'); 
 const { badRequest } = require('../../util/errors');
 
+
 const getProfile = (req) => {
   const { steamUtil, user: { steamid } } = req; 
   if (!steamUtil) return Promise.reject(badRequest('no steam account associated with profile'));
@@ -34,6 +35,7 @@ const updateProfile = async (req) => {
 
   return 'completed update of profile' + ((includeFriends) ? ' and profiles of friends': ''); 
 }; 
+
 
 module.exports = { 
   getProfile: defaultHandler(getProfile), 

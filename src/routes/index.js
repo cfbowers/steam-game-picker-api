@@ -5,12 +5,12 @@ const authHandlers = require('./handlers/authHandlers');
 const steamHandlers = require('./handlers/steamHandlers');
 
 
-router.post   ('/users',                                     userHandlers.create);
-
 router.post   ('/auth/validateToken',                        authHandlers.validate);
 router.post   ('/auth/login',                                authHandlers.login);
 router.post   ('/auth/logout',                               authHandlers.logout); 
 router.post   ('/auth/logoutAll',                            authHandlers.logout); 
+
+router.post   ('/users',                                     userHandlers.create);
 
 router.get    ('/profile',                                   userHandlers.read);
 router.patch  ('/profile',                                   userHandlers.update);

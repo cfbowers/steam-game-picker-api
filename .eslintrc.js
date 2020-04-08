@@ -18,8 +18,6 @@ const eslint = {
     'block-spacing': ['error', 'always'],
     'nonblock-statement-body-position': ['error', 'any'],
     'brace-style': ['error', '1tbs', { 'allowSingleLine': true } ],
-    // 'curly': ['error', 'multi-or-nest'],
-    'arrow-parens': ['error', 'always'],
     'arrow-body-style': ['error', 'as-needed'],
     'no-confusing-arrow': ['error', { 'allowParens': true } ],
     'arrow-spacing': ['error', { 'before': true, 'after': true } ],
