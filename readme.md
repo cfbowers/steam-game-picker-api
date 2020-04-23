@@ -1,5 +1,5 @@
 # steam-game-picker-api
-API for [Steam Roulette](https://www.steamroulette.app/demo) application. Steam Roulette picks a random game that you have in common with selected friends. It will also show other games you have in common. The Steam API does not provide this functionality. 
+API for [Steam Roulette](https://www.steamroulette.app/demo) application. The app gets a list of games you have in common with selected users. The Steam API does not provide this functionality. 
 
 The main functions of the API are authentication, linking app users to Steam accounts, fetching data using the distinct API keys of users, and interacting with data from the Steam API.
 
@@ -12,6 +12,13 @@ Currently being refactored to clean up files, and increase route  speed. The fol
   3. Time complexity improvements in the steamServices.js functions
 
 I'll post exact numbers when the refactor is complete. 
+
+## Suggested Files to Review
+  1. routes/index.js                    for layout of the app
+  2. routes/handlers/steamHanders.js    for how handlers are written and wrapped in higher order functions
+  3. routes/handlers/higherOrder.js     
+  4. routes/services/steamServices.js   logic for getting Steam games and users
+  5. util/steamAPI.js                   custom Steam API logic
 
 ## Problems Faced 
 ### Steam API data unavailable for certain Steam accounts
