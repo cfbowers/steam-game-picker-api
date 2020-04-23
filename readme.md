@@ -18,7 +18,7 @@ I'll post exact numbers when the refactor is complete.
   1. src/routes/index.js                    for layout of the app
   2. src/routes/handlers/steamHanders.js    for how handlers are written and wrapped in higher order functions
   3. src/routes/handlers/higherOrder.js     
-  4. src/routes/services/steamServices.js   logic for getting Steam games and users
+  4. src/routes/services/steamServices.js   logic for getting Steam games and users from the db if they exist, or api if they don't
   5. src/util/steamAPI.js                   custom Steam API logic
 ```
 
