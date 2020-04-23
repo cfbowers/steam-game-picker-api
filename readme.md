@@ -3,7 +3,7 @@ API for [Steam Roulette](https://www.steamroulette.app/demo) application. Steam 
 
 The main functions of the API are authentication, linking app users to Steam accounts, fetching data using the distinct API keys of users, and interacting with data from the Steam API.
 
-Built with Express.js, Node.js, MongoDB & Mongoose, Redux, and Passport for Steam authentication. 
+Built with Express.js, Node.js, MongoDB & Mongoose, and Passport for Steam authentication. 
 
 ## Status 
 Currently being refactored to clean up files, and increase route  speed. The following changes have at least halved the amount of time each route would take: 
