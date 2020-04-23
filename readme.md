@@ -1,4 +1,4 @@
-# Steam-game-picker-API
+# steam-game-picker-api
 API for [Steam Roulette](https://www.steamroulette.app/demo) application.
 The main functions of the API are authentication, linking app users to Steam accounts, fetching data using the distinct API keys of users, and interacting with data from the Steam API.
 
@@ -14,24 +14,23 @@ I'll post exact numbers when the refactor is complete.
 
 ## Problems Faced 
 ### Steam API data unavailable for certain Steam accounts
-I initially wanted to only use my Steam API key for this app to keep it simple. However, the Steam API will return data based off of the context of API key used. This meant that if someone else wanted to log in to this app, my API key most likely could not get the details of their Steam account or of their friends' accounts because my Steam account needed to be friends with each of those accounts to effectively pull data. To solve this I: 
-  1. Linked this app's user accounts with Steam Ids using Passport and Steam API keys that would need to be added manually by the user.   
+I initially wanted to only use my Steam API key for this app to keep it simple. However, the Steam API will return data based off of the permissions of the API key used. This meant that my API key would not be able to get data for Steam accounts I was not friends with, so basically, no one else could use this app. To solve this I: 
+  1. Linked this app's user accounts with Steam Id that would be retrieved using Passport and a Steam API key that would need to be added manually by the user.   
   2. Made the routes require that the a user have a Steam Id and API key linked to their account before making calls to the Steam API. 
   3. Made Steam API calls with the Steam API key of the logged in user
 
 ### Try/catch in every route handler made the code less 'DRY' 
-It seemed to me that there was a better way to handle errors in the routes than wrapping each in a try/catch block.  To solve this I: 
+I wanted a better way to handle errors in the routes than wrapping each in a try/catch block. To solve this I: 
   1. Created the errorHandler.js middleware to handle all errors in the routes
-  2. Wrote functions in the higherOrder.js handler that would wrap appropriate handler functions. These functions would either send a successful result, redirect, or pass errors to errorHandler.js. 
+  2. Wrote higher order functions in the higherOrder.js handler that would wrap appropriate handler functions. These functions would either send a successful result, redirect, or pass errors to errorHandler.js. 
   
-
 ## Other Noteworthy Packages 
 The following and more found in `package.json`:
 * node-fetch - making calls to Steam API
 * config - central app configs 
 * jsend - ensuring consistency in JSON objects returned by the API
 * jsonwebtoken, bcryptjs - authentication
-* passport, passport-steam - for authenticating to Steam and linking 
+* passport, passport-steam - for authenticating to Steam and linking app accounts to Steam accounts
 * mocha, chai, supertest - testing 
 
 ## Installation
@@ -78,7 +77,7 @@ npm test
                               from working directly with the database or API. 
                               general flow: route -> route handler -> service -> data source
 
-  |-- util                    functions available to the entire app and without an obvious home
+  |-- util                    functions available to the entire app 
       |-- steamAPI.js         custom functions for working with the Steam API 
       |-- errors.js           error objects that will be used and passed to the errorHandler middleware
 
