@@ -14,11 +14,13 @@ Currently being refactored to clean up files, and increase route  speed. The fol
 I'll post exact numbers when the refactor is complete. 
 
 ## Suggested Files to Review
+```
   1. routes/index.js                    for layout of the app
   2. routes/handlers/steamHanders.js    for how handlers are written and wrapped in higher order functions
   3. routes/handlers/higherOrder.js     
   4. routes/services/steamServices.js   logic for getting Steam games and users
   5. util/steamAPI.js                   custom Steam API logic
+```
 
 ## Problems Faced 
 ### Steam API data unavailable for certain Steam accounts
