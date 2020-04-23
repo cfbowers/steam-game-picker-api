@@ -1,5 +1,6 @@
 # steam-game-picker-api
-API for [Steam Roulette](https://www.steamroulette.app/demo) application.
+API for [Steam Roulette](https://www.steamroulette.app/demo) application. Steam Roulette picks a random game that you have in common with selected friends. It will also show other games you have in common. The Steam API does not provide this functionality. 
+
 The main functions of the API are authentication, linking app users to Steam accounts, fetching data using the distinct API keys of users, and interacting with data from the Steam API.
 
 Built with Express.js, Node.js, MongoDB & Mongoose, Redux, and Passport for Steam authentication. 
