@@ -1,6 +1,7 @@
 const SteamUser = require('../data/models/steamUser');
 const SteamGame = require('../data/models/steamGame');
 const api = require('../util/steamApi'); 
+const d = require('debug')('steam-roulette-api:services:steam');
 
 
 const retrieveSteamUser = (steamid)     => SteamUser.findOne({ steamid }); 
@@ -16,10 +17,14 @@ async function getSteamUser(key, steamid) {
 }
 
 async function getSteamGame(appId) {
-  console.log(appId);
   let game = await retrieveSteamGame(appId); 
   if (!game) {
-    game = new SteamGame(await api.getGameDetails(appId));
+    let gameData = await api.getGameDetails(appId); 
+    if (!gameData) { 
+      gameData = { steam_appid: appId, error: 'unable to get details from steam sore api' };
+      d(`cannot get app details for ${appId}`);
+    };
+    game = new SteamGame(gameData);
     await game.save();
   }
   return game; 
@@ -29,7 +34,8 @@ async function getSharedGames (key, steamids) {
   const users = await Promise.all(steamids.map(s => getSteamUser(key, s))); 
   const appIdArrays = users.map(u => u.appIds); 
   const sharedAppIds = getCommonElementsAmongAll(appIdArrays);
-  return Promise.all(sharedAppIds.map(a => getSteamGame(a)));
+  const sharedGameDetails = await Promise.all(sharedAppIds.map(a => getSteamGame(a)));
+  return sharedGameDetails.filter(g => (!g.error));
 }
 
 function getCommonElementsAmongAll(arrays) {
