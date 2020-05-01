@@ -8,12 +8,7 @@ const validate    = () => Promise.resolve('token is valid');
 const login       = (req) => us.login(req.body.email, req.body.password); 
 const logout      = (req) => us.logout(req.user, req.token, req.originalUrl.includes('logoutAll'));
 const steamLogin  = async () => feUrl + '/profile';
-const steamLoginReturn = async (req) => {
-  const steamid = req.user._json.steamid;
-  const options =  { includeAppIds: true, includeFriendIds: true, update: true };
-  await req.steamUtil.getOrNewSteamUser(steamid, options);
-  return feUrl + '/profile';
-};
+const steamLoginReturn = async (req) => feUrl + '/profile';
 
 
 module.exports = { 
