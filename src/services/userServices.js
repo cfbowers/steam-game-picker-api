@@ -23,7 +23,8 @@ async function logout (user, token, logoutAll = false) {
 }
 
 async function updateUser (user, updates) {
-  if (updates['password']) { 
+  if (user.email === 'hello@demo.com') return Promise.reject('cannot make updates to demo user'); 
+  if ('password' in updates) { 
     const { password, newPassword, confirmNewPassword } = updates; 
     const result = await user.updatePassword(password, newPassword, confirmNewPassword);
     if (result.error) return Promise.reject(result.error); 
